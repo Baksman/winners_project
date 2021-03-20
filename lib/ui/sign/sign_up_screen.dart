@@ -1,7 +1,7 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:project/ui/animation/login_animation.dart';
-import 'package:awesome_loader/awesome_loader.dart';
+// import 'package:awesome_loader/awesome_loader.dart';
 import 'package:project/view_model/auth_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -164,7 +164,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                         String serialisedPass =
                                             val.trim().replaceAll(" ", "");
                                         if (password != serialisedPass) {
-                                          return "passwords doesnt match";
+                                          return "password does not match";
                                         }
                                         password = val;
                                         return null;
@@ -218,10 +218,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                         FadeAnimation(
                             1.5,
-                            Text(
-                              "Login",
-                              style: TextStyle(
-                                  color: Color.fromRGBO(143, 148, 251, 1)),
+                            FlatButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: Text(
+                                "Login",
+                                style: TextStyle(
+                                    color: Color.fromRGBO(143, 148, 251, 1)),
+                              ),
                             )),
                       ],
                     ),

@@ -7,4 +7,8 @@ class AppUser {
   final String uuid;
 
   AppUser({this.name, this.email, this.userType, this.uuid});
+
+  toJson() {
+    return {"name": name, "email": email, "userType": userType, "uuid": uuid};
+  }
 }

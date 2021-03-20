@@ -21,6 +21,9 @@ class MainWidget extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AuthService()),
       ],
       child: MaterialApp(
+        theme: ThemeData(
+          primaryColor:   Colors.purple,
+        ),
         debugShowCheckedModeBanner: false,
         home: StreamBuilder<User>(
           stream: FirebaseAuth.instance.authStateChanges(),
@@ -36,7 +39,9 @@ class MainWidget extends StatelessWidget {
               );
             }
             User user = snapshot.data;
-            return (user != null && user.emailVerified)
+            return (user != null 
+            // && user.emailVerified
+            )
                 ? HomeScreen()
                 : LoginScreen();
           },

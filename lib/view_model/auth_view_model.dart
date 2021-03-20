@@ -1,12 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
 import 'package:project/model/user_model.dart';
-import 'package:project/ui/utils.dart';
+import 'package:project/ui/utils/flush_bar_utils.dart';
 import 'package:provider/provider.dart';
 
 class AuthService extends ChangeNotifier {
   FirebaseAuth auth = FirebaseAuth.instance;
+  CollectionReference users = FirebaseFirestore.instance.collection('users');
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
   bool _isLoading = false;
   bool get isLoading => _isLoading;
   Future<bool> register(
@@ -19,7 +22,7 @@ class AuthService extends ChangeNotifier {
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
       // to verify ur email
-      userCredential.user.sendEmailVerification();
+      await userCredential.user.sendEmailVerification();
       _isLoading = false;
       notifyListeners();
       show_flushbar(
@@ -30,12 +33,11 @@ class AuthService extends ChangeNotifier {
       _isLoading = false;
       notifyListeners();
       if (e.code == 'weak-password') {
-        show_flushbar("he password provided is too weak").show(context);
+        show_flushbar("The password provided is too weak").show(context);
         // print('The password provided is too weak.');
       } else if (e.code == 'email-already-in-use') {
         // print('The account already exists for that email.');
-        show_flushbar("The account already exists for that email.")
-            .show(context);
+        show_flushbar("Email already in use").show(context);
       }
       return false;
     } catch (e) {
@@ -79,7 +81,7 @@ class AuthService extends ChangeNotifier {
       notifyListeners();
       User user = userCredential.user;
       if (!user.emailVerified) {
-        user.sendEmailVerification();
+        await user.sendEmailVerification();
         show_flushbar(
                 "You have not verified your email yet please verify to continue")
             .show(context);
@@ -97,8 +99,6 @@ class AuthService extends ChangeNotifier {
       }
       return false;
     } catch (e) {
-      print(e);
-      print(e);
       _isLoading = false;
       notifyListeners();
       show_flushbar("Error occured please try again").show(context);
