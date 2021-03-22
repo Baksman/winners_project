@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 enum TypeOfUser { student, admin }
 
 class AppUser {
@@ -5,10 +7,43 @@ class AppUser {
   final String email;
   final TypeOfUser userType;
   final String uuid;
+  final String department;
+  final String imageUrl;
+  final String gender;
+  final String hostel;
+  final String roomNumber;
+  final Timestamp dateRegistered;
+  final String matricNumber;
+  final String mobileNumber;
 
-  AppUser({this.name, this.email, this.userType, this.uuid});
+  AppUser(
+      {this.name,
+      this.email,
+      this.mobileNumber,
+      this.userType,
+      this.matricNumber,
+      this.roomNumber,
+      this.uuid,
+      this.department,
+      this.dateRegistered,
+      this.gender,
+      this.hostel,
+      this.imageUrl});
 
   toJson() {
-    return {"name": name, "email": email, "userType": userType, "uuid": uuid};
+    return {
+      "dateReg": dateRegistered,
+      "matricNo": matricNumber,
+      "hostel": hostel,
+      "department": department,
+      "imageUrl": imageUrl,
+      "roomNumber": roomNumber,
+      "gender": gender,
+      "name": name,
+      "email": email,
+      "userType": userType,
+      "uuid": uuid,
+      "mobileNo": mobileNumber,
+    };
   }
 }
