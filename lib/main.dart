@@ -2,6 +2,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:project/model/user_model.dart';
 // import 'package:kt_drawer_menu/kt_drawer_menu.dart';
 import 'package:project/ui/home_screen.dart';
 import 'package:project/ui/login/login_screen.dart';
@@ -19,10 +20,12 @@ void main() async {
 class MainWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    //onAuthChange() 
     // final width = MediaQuery.of(context).size.width;
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthService()),
+        Provider(create: (_) => AppUser()),
       ],
       child: MaterialApp(
         theme: ThemeData(
@@ -32,13 +35,12 @@ class MainWidget extends StatelessWidget {
         home: StreamBuilder<User>(
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (ctx, snapshot) {
-            final width = MediaQuery.of(ctx).size.width;
+         
             if (snapshot.hasError) {
               print(snapshot.error);
               logger.d(snapshot.error);
             }
             if (!snapshot.hasData) {
-            
               // return Material(
               //   child: Center(
               //     child: AwesomeLoader(
@@ -50,6 +52,9 @@ class MainWidget extends StatelessWidget {
             }
             logger.d("data added");
             User user = snapshot.data;
+            if (user != null) {
+              Provider.of<AppUser>(ctx).uuid = user.uid;
+            }
             return user == null ? LoginScreen() : Home();
           },
         ),

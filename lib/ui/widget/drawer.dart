@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project/ui/photo_view_screen.dart';
 import 'package:project/ui/utils/color_utils.dart';
 import 'package:project/ui/widget/logout_dialog.dart';
 
@@ -15,19 +16,26 @@ class DrawerWidget extends StatelessWidget {
             Spacer(),
             Align(
               alignment: Alignment.centerLeft,
-              child: Container(
-                margin: EdgeInsets.only(left: 20, bottom: 10),
-                height: 70,
-                width: 70,
-                decoration: BoxDecoration(
-                    color: Colors.green,
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                        image: AssetImage("assets/images/profile_pic.png"))),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (ctx) {
+                    return PhotoViewScreen();
+                  }));
+                },
+                child: Container(
+                  margin: EdgeInsets.only(left: 20, bottom: 10),
+                  height: 70,
+                  width: 70,
+                  decoration: BoxDecoration(
+                      color: Colors.green,
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                          image: AssetImage("assets/images/profile_pic.png"))),
+                ),
               ),
             ),
-            _buildItem(context, "Profile", Icons.settings, () {}),
-            _buildItem(context, "Settings", Icons.next_week, () {}),
+            _buildItem(context, "Profile", Icons.person,(){}),
+            _buildItem(context, "Settings", Icons.settings, () {}),
             _buildItem(context, "About", Icons.menu, () {}),
             Spacer(),
             _buildItem(context, "Logout", Icons.logout, () {

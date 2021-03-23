@@ -6,7 +6,7 @@ class AppUser {
   final String name;
   final String email;
   final TypeOfUser userType;
-  final String uuid;
+   String uuid;
   final String department;
   final String imageUrl;
   final String gender;

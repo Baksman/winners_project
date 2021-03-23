@@ -97,4 +97,8 @@ class AuthService extends ChangeNotifier {
   Future<void> resetPassword(String email) async {
     await auth.sendPasswordResetEmail(email: email);
   }
+
+  Stream onAuthChange() {
+    return auth.authStateChanges();
+  }
 }
