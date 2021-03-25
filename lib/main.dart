@@ -2,6 +2,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:project/database/database_service.dart';
 import 'package:project/model/user_model.dart';
 // import 'package:kt_drawer_menu/kt_drawer_menu.dart';
 import 'package:project/ui/home_screen.dart';
@@ -20,12 +21,14 @@ void main() async {
 class MainWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    //onAuthChange() 
+    //onAuthChange()
     // final width = MediaQuery.of(context).size.width;
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthService()),
         Provider(create: (_) => AppUser()),
+        Provider(create: (_) => DatabaseService()),
+        // DatabaseService
       ],
       child: MaterialApp(
         theme: ThemeData(
@@ -35,7 +38,6 @@ class MainWidget extends StatelessWidget {
         home: StreamBuilder<User>(
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (ctx, snapshot) {
-         
             if (snapshot.hasError) {
               print(snapshot.error);
               logger.d(snapshot.error);

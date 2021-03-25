@@ -6,7 +6,17 @@ class DatabaseService {
   static FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   static Future<void> addUser(AppUser user) async {
-    await firestore.doc("users").collection(user.uuid).doc().set(user.toJson());
+    await firestore
+        .doc("users")
+        .collection(user.uuid)
+        .doc(user.uuid)
+        .set(user.toJson());
+  }
+
+  static Future<AppUser> getUserData(String uuid) async {
+    DocumentSnapshot docSnap =
+        await firestore.doc("users").collection(uuid).doc(uuid).get();
+    return AppUser.fromMap(docSnap.data());
   }
 
   static Future<void> addCompliant(Complaint complaint) async {

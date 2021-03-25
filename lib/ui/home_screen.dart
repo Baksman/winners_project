@@ -55,6 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Dashbaord"),
+        centerTitle: true,
         leading: IconButton(
             icon: Icon(Icons.menu),
             onPressed: () {

@@ -5,8 +5,8 @@ enum TypeOfUser { student, admin }
 class AppUser {
   final String name;
   final String email;
-  final TypeOfUser userType;
-   String uuid;
+  final String userType;
+  String uuid;
   final String department;
   final String imageUrl;
   final String gender;
@@ -29,6 +29,21 @@ class AppUser {
       this.gender,
       this.hostel,
       this.imageUrl});
+  factory AppUser.fromMap(Map<String, dynamic> map) {
+    return AppUser(
+        name: map['name'] ?? "",
+        email: map['email'] ?? "",
+        uuid: map['uuid'] ?? "",
+        department: map['department'] ?? "",
+        imageUrl: map['imageUrl'] ?? "",
+        gender: map['gender'] ?? "",
+        hostel: map['hostel'] ?? "",
+        roomNumber: map['roomNumber'] ?? "",
+        matricNumber: map['matricNumber'] ?? "",
+        mobileNumber: map['mobileNumber'] ?? "",
+        dateRegistered: map["dateRegistered"] ?? "",
+        userType: map["userType"] ?? "");
+  }
 
   toJson() {
     return {

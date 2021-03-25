@@ -3,6 +3,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:kt_drawer_menu/kt_drawer_menu.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:project/database/database_service.dart';
 import 'package:project/ui/animation/login_animation.dart';
 import 'package:project/ui/home_screen.dart';
 import 'package:project/ui/sign/sign_up_screen.dart';
@@ -25,6 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthService>(context);
+    final databaseProvider = Provider.of<DatabaseService>(context);
     return KTDrawerMenu(
       drawer: DrawerWidget(),
       radius: 10.0,
@@ -202,7 +204,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                                   context: context,
                                                   email: email,
                                                   password: password);
-                                          if (true) {
+                                          if (result) {
                                             Navigator.of(context)
                                                 .pushAndRemoveUntil(
                                                     MaterialPageRoute(

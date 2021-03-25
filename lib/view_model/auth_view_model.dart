@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
 import 'package:flutter/material.dart';
+import 'package:project/database/database_service.dart' as dbs;
+import 'package:project/model/user_model.dart';
 // import 'package:project/model/user_model.dart';
 import 'package:project/ui/utils/flush_bar_utils.dart';
 // import 'package:provider/provider.dart';
@@ -23,12 +24,19 @@ class AuthService extends ChangeNotifier {
           .createUserWithEmailAndPassword(email: email, password: password);
       // to verify ur email
       User user = userCredential.user;
+      AppUser _user = AppUser(
+          email: user.email,
+          dateRegistered: Timestamp.now(),
+          imageUrl: "",
+          userType: "Student",
+          uuid: user.uid);
+      dbs.DatabaseService.addUser(_user);
       await sendVerificationEmail(user);
       // await userCredential.user.sendEmailVerification();
       _isLoading = false;
       notifyListeners();
       show_flushbar(
-              "Account created successfully please verify your email address")
+              "Account created successfully,please verify your email address")
           .show(context);
       return true;
     } on FirebaseAuthException catch (e) {
@@ -57,9 +65,17 @@ class AuthService extends ChangeNotifier {
       notifyListeners();
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
+      User user = userCredential.user;
+      AppUser _user = AppUser(
+          email: user.email,
+          dateRegistered: Timestamp.now(),
+          imageUrl: "",
+          userType: "Student",
+          uuid: user.uid);
+      dbs.DatabaseService.addUser(_user);
       _isLoading = false;
       notifyListeners();
-      User user = userCredential.user;
+
       if (!user.emailVerified) {
         await sendVerificationEmail(user);
         show_flushbar(

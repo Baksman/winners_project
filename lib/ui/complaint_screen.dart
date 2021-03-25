@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:project/ui/utils/color_utils.dart';
 
@@ -6,8 +7,31 @@ class ComplaintScreen extends StatefulWidget {
   _ComplaintScreenState createState() => _ComplaintScreenState();
 }
 
+// showCupertinoModalPopup(
+//   context: context,
+//   builder: (BuildContext context) => CupertinoActionSheet(
+//       title: const Text('Choose Options'),
+//       message: const Text('Your options are '),
+//       actions: <Widget>[
+//         CupertinoActionSheetAction(
+//           child: const Text('One'),
+//           onPressed: () {
+//             Navigator.pop(context, 'One');
+//           },
+//         ),
+//         CupertinoActionSheetAction(
+//           child: const Text('Two'),
+//           onPressed: () {
+//             Navigator.pop(context, 'Two');
+//           },
+//         )
+//       ],
+//       ),
+// );
 class _ComplaintScreenState extends State<ComplaintScreen> {
   final _formKey = GlobalKey<FormState>();
+  TextEditingController _hostelController = TextEditingController();
+  List<String> _hostels = ["Danfodio", "Ribadu", "Alex hostel", "Amina"];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,6 +43,86 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
           key: _formKey,
           child: Column(
             children: [
+              SizedBox(
+                height: 20,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Theme(
+                  data: new ThemeData(
+                    primaryColor: primaryColor,
+                    primaryColorDark: primaryColor,
+                  ),
+                  child: GestureDetector(
+                    onTap: () {
+                      showCupertinoModalPopup(
+                          context: context,
+                          builder: (BuildContext context) =>
+                              CupertinoActionSheet(
+                                title: const Text('Choose your hostel'),
+                                // message: const Text('Your options are '),
+                                actions: _hostels
+                                    .map((e) => CupertinoActionSheetAction(
+                                          child: Text(e),
+                                          onPressed: () {
+                                            _hostelController.text = e;
+                                            Navigator.pop(context, 'One');
+                                          },
+                                        ))
+                                    .toList(),
+                                // <Widget>[
+                                //   CupertinoActionSheetAction(
+                                //     child: const Text('One'),
+                                //     onPressed: () {
+                                //       Navigator.pop(context, 'One');
+                                //     },
+                                //   ),
+                                //   CupertinoActionSheetAction(
+                                //     child: const Text('Two'),
+                                //     onPressed: () {
+                                //       Navigator.pop(context, 'Two');
+                                //     },
+                                //   )
+                                // ],
+                                cancelButton: CupertinoActionSheetAction(
+                                  child: const Text(
+                                    'Cancel',
+                                    style: TextStyle(color: Colors.red),
+                                  ),
+                                  isDefaultAction: true,
+                                  onPressed: () {
+                                    Navigator.pop(context, 'Cancel');
+                                  },
+                                ),
+                              ));
+                    },
+                    child: AbsorbPointer(
+                      child: TextFormField(
+                        // maxLength: 30,Î
+                        controller: _hostelController,
+                        validator: (val) {
+                          String validatedInput =
+                              val.replaceAll(" ", "").trim();
+                          if (validatedInput.isEmpty) {
+                            return "required";
+                          }
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                            labelText: "hostel",
+                            contentPadding:
+                                EdgeInsets.symmetric(horizontal: 20),
+                            border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0)),
+                                borderSide: BorderSide(
+                                  color: Colors.transparent,
+                                ))),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
               SizedBox(
                 height: 20,
               ),

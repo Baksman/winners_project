@@ -1,11 +1,16 @@
+import 'package:awesome_loader/awesome_loader.dart';
 import 'package:flutter/material.dart';
+import 'package:project/database/database_service.dart';
+import 'package:project/model/user_model.dart';
 import 'package:project/ui/photo_view_screen.dart';
 import 'package:project/ui/utils/color_utils.dart';
 import 'package:project/ui/widget/logout_dialog.dart';
+import 'package:provider/provider.dart';
 
 class DrawerWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<AppUser>(context);
     return Container(
       color: primaryColor,
       // width: 200,
@@ -16,25 +21,53 @@ class DrawerWidget extends StatelessWidget {
             Spacer(),
             Align(
               alignment: Alignment.centerLeft,
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (ctx) {
-                    return PhotoViewScreen();
-                  }));
-                },
-                child: Container(
-                  margin: EdgeInsets.only(left: 20, bottom: 10),
-                  height: 70,
-                  width: 70,
-                  decoration: BoxDecoration(
-                      color: Colors.green,
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                          image: AssetImage("assets/images/profile_pic.png"))),
-                ),
-              ),
+              child: FutureBuilder<Object>(
+                  future: DatabaseService.getUserData(provider.uuid),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return Transform.translate(
+                        offset: Offset(0,0),
+                                              child: AwesomeLoader(
+                          color: Colors.white,
+                          loaderType: AwesomeLoader.AwesomeLoader3,
+                        ),
+                      );
+                    }
+                    AppUser _user = AppUser();
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        GestureDetector(
+                            onTap: () {
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (ctx) {
+                                return PhotoViewScreen(
+                                  user: _user,
+                                );
+                              }));
+                            },
+                            child: Container(
+                              margin: EdgeInsets.only(left: 20, bottom: 10),
+                              height: 70,
+                              width: 70,
+                              decoration: BoxDecoration(
+                                  color: Colors.green,
+                                  border:
+                                      Border.all(color: Colors.white, width: 3),
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                      image: AssetImage(
+                                          "assets/images/profile_pic.png"))),
+                            )),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text(_user.name)
+                      ],
+                    );
+                  }),
             ),
-            _buildItem(context, "Profile", Icons.person,(){}),
+            _buildItem(context, "Profile", Icons.person, () {}),
             _buildItem(context, "Settings", Icons.settings, () {}),
             _buildItem(context, "About", Icons.menu, () {}),
             Spacer(),

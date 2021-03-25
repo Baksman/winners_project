@@ -45,11 +45,11 @@ class Complaint {
 
   factory Complaint.fromMap(Map<String, dynamic> map) {
     return Complaint(
-      map['title'],
-      map['hostel'],
-      map['userId'],
-      map['complaintID'],
-      map['desc'],
+      title: map['title'],
+      hostel: map['hostel'],
+      userId: map['userId'],
+      complaintID: map['complaintID'],
+      desc: map['desc'],
     );
   }
 

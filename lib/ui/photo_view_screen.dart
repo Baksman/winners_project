@@ -15,7 +15,7 @@ class PhotoViewScreen extends StatelessWidget {
   _getUserImage() {
     if (image == null) {
       if (user.imageUrl?.isEmpty ?? false) {
-        return AssetImage("assets/images/place_holder.png");
+        return AssetImage("assets/images/profile_pic.png");
       }
       return CachedNetworkImageProvider(user.imageUrl);
     } else {
