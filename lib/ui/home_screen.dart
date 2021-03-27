@@ -6,7 +6,7 @@ import 'package:project/model/user_model.dart';
 import 'package:project/ui/complaint_screen.dart';
 import 'package:project/ui/utils/color_utils.dart';
 import 'package:project/ui/widget/drawer.dart';
-import 'package:provider/provider.dart';
+// import 'package:provider/provider.dart';
 
 class Home extends StatelessWidget {
   @override
@@ -16,7 +16,6 @@ class Home extends StatelessWidget {
       width: 140.0,
       radius: 10.0,
       scale: 0.8,
-      shadow: 20.0,
       content: HomeScreen(),
       drawer: DrawerWidget(),
     );

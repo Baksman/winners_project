@@ -5,6 +5,7 @@ import 'package:project/database/database_service.dart' as dbs;
 import 'package:project/model/user_model.dart';
 // import 'package:project/model/user_model.dart';
 import 'package:project/ui/utils/flush_bar_utils.dart';
+import 'package:project/ui/utils/log_utils.dart';
 // import 'package:provider/provider.dart';
 
 class AuthService extends ChangeNotifier {
@@ -72,7 +73,8 @@ class AuthService extends ChangeNotifier {
           imageUrl: "",
           userType: "Student",
           uuid: user.uid);
-      dbs.DatabaseService.addUser(_user);
+      await dbs.DatabaseService.addUser(_user);
+      logger.w("added succesfully");
       _isLoading = false;
       notifyListeners();
 
@@ -86,6 +88,7 @@ class AuthService extends ChangeNotifier {
 
       return true;
     } on FirebaseAuthException catch (e) {
+
       _isLoading = false;
       notifyListeners();
       if (e.code == 'user-not-found') {
@@ -95,6 +98,7 @@ class AuthService extends ChangeNotifier {
       }
       return false;
     } catch (e) {
+          logger.d(e);
       _isLoading = false;
       notifyListeners();
       show_flushbar("Error occured please try again").show(context);

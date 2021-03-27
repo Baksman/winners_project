@@ -1,4 +1,5 @@
 // import '../constants/firebase_constants.dart';
+import 'package:project/database/local_storage.dart';
 import 'package:uuid/uuid.dart';
 import 'dart:io';
 // import 'package:http/http.dart' as http;
@@ -21,7 +22,9 @@ class StorageService {
           .child("images/users/userProfile_$photoId.jpg")
           .putFile(compressedImage);
       TaskSnapshot storageSnap = await _storageUploadTask;
+
       String downloadUrl = await storageSnap.ref.getDownloadURL();
+      LocalStorage.saveImageUrl(downloadUrl);
       return downloadUrl;
     } catch (e) {
       rethrow;

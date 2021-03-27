@@ -9,21 +9,21 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:project/model/user_model.dart';
 
 class PhotoViewScreen extends StatelessWidget {
-  final AppUser user;
+  final String imageUrl;
   final File image;
 
   _getUserImage() {
     if (image == null) {
-      if (user.imageUrl?.isEmpty ?? false) {
+      if (imageUrl.isEmpty ?? false) {
         return AssetImage("assets/images/profile_pic.png");
       }
-      return CachedNetworkImageProvider(user.imageUrl);
+      return CachedNetworkImageProvider(imageUrl);
     } else {
       return FileImage(image);
     }
   }
 
-  PhotoViewScreen({this.user, this.image});
+  PhotoViewScreen({this.imageUrl, this.image});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,7 +31,7 @@ class PhotoViewScreen extends StatelessWidget {
         children: <Widget>[
           Container(
             child: Hero(
-                tag: user.uuid,
+                tag: imageUrl,
                 child: PhotoView(imageProvider: _getUserImage())),
           ),
           Positioned(

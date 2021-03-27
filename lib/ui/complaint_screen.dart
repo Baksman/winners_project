@@ -31,7 +31,17 @@ class ComplaintScreen extends StatefulWidget {
 class _ComplaintScreenState extends State<ComplaintScreen> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController _hostelController = TextEditingController();
-  List<String> _hostels = ["Danfodio", "Ribadu", "Alex hostel", "Amina"];
+  List<String> _hostels = [
+    "Danfodio hall",
+    "Ribadu hall",
+    "Alexander hall",
+    "Ribadu",
+    "Suleiman hall",
+    "Amina hall",
+    "Shehu idris",
+    "Aliko dangote",
+    "ICSA/Ramat"
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -165,8 +175,14 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
                     primaryColorDark: primaryColor,
                   ),
                   child: TextFormField(
-                    // maxLength: null,
-
+                    // controller: _aboutRoomController,
+                    maxLines: 6,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Color(0xFFEAEDF6),
+                      hintText: '',
+                      border: InputBorder.none,
+                    ),
                     validator: (val) {
                       String validatedInput = val.replaceAll(" ", "").trim();
                       if (validatedInput.length < 10) {
@@ -174,19 +190,30 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
                       }
                       return null;
                     },
-                    maxLines: null,
-                    maxLength: 300,
-                    decoration: InputDecoration(
-                        labelText: "description",
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                        border: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(10.0)),
-                            borderSide: BorderSide(
-                              color: Colors.transparent,
-                            ))),
                   ),
+                  //  TextFormField(
+                  //   // maxLength: null,
+
+                  //   validator: (val) {
+                  //     String validatedInput = val.replaceAll(" ", "").trim();
+                  //     if (validatedInput.length < 10) {
+                  //       return "invalid too short";
+                  //     }
+                  //     return null;
+                  //   },
+                  //   maxLines: null,
+                  //   maxLength: 300,
+                  //   decoration: InputDecoration(
+                  //       labelText: "description",
+                  //       contentPadding:
+                  //           EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                  //       border: OutlineInputBorder(
+                  //           borderRadius:
+                  //               BorderRadius.all(Radius.circular(10.0)),
+                  //           borderSide: BorderSide(
+                  //             color: Colors.transparent,
+                  //           ))),
+                  // ),
                 ),
               ),
               SizedBox(

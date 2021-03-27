@@ -26,7 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthService>(context);
-    final databaseProvider = Provider.of<DatabaseService>(context);
+    // final databaseProvider = Provider.of<DatabaseService>(context);
     return KTDrawerMenu(
       drawer: DrawerWidget(),
       radius: 10.0,
@@ -204,7 +204,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                                   context: context,
                                                   email: email,
                                                   password: password);
-                                          if (result) {
+                                          if (result ?? false) {
                                             Navigator.of(context)
                                                 .pushAndRemoveUntil(
                                                     MaterialPageRoute(

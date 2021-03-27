@@ -165,7 +165,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             MaterialPageRoute(builder: (context) {
                           return PhotoViewScreen(
                             image: profileImage,
-                            user: widget.user,
+                            // user: widget.user,
                           );
                         }));
                       },
