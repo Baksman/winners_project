@@ -1,8 +1,11 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:awesome_loader/awesome_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:kt_drawer_menu/kt_drawer_menu.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:project/database/local_storage.dart';
 import 'package:project/model/user_model.dart';
+import 'package:project/ui/all_complaint_screen.dart';
 import 'package:project/ui/complaint_screen.dart';
 import 'package:project/ui/utils/color_utils.dart';
 import 'package:project/ui/widget/drawer.dart';
@@ -82,12 +85,23 @@ class _HomeScreenState extends State<HomeScreen> {
                   SizedBox(
                     width: 5,
                   ),
-                  Text(
-                    "winner",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  FutureBuilder<Object>(
+                      future: LocalStorage.getUserName(),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData)
+                          return AwesomeLoader(
+                            color: Colors.white,
+                            loaderType: AwesomeLoader.AwesomeLoader3,
+                          );
+                        return Center(
+                          child: Text(
+                            snapshot.data,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        );
+                      }),
                 ],
               ),
               SizedBox(
@@ -137,25 +151,36 @@ class _HomeScreenState extends State<HomeScreen> {
               SizedBox(
                 height: 20,
               ),
-              Card(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10)),
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  height: 50,
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.download_sharp,
-                        color: primaryColor,
-                      ),
-                      SizedBox(
-                        width: 20,
-                      ),
-                      Text("All complaint",
-                          style: TextStyle(
-                              color: primaryColor, fontWeight: FontWeight.bold))
-                    ],
+              GestureDetector(
+                // AllComplaintScreen
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      PageTransition(
+                          type: PageTransitionType.rightToLeft,
+                          child: AllComplaintScreen()));
+                },
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    height: 50,
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.download_sharp,
+                          color: primaryColor,
+                        ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Text("All complaint",
+                            style: TextStyle(
+                                color: primaryColor,
+                                fontWeight: FontWeight.bold))
+                      ],
+                    ),
                   ),
                 ),
               ),

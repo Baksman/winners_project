@@ -8,7 +8,7 @@ class DatabaseService {
 
   static Future<void> addUser(AppUser user) async {
     logger.i(user.uuid);
-    await firestore.doc("new").collection("boys").add({"jj":"hhd"});
+    await firestore.doc("new").collection("boys").add({"jj": "hhd"});
     logger.i("got here");
 
     await firestore

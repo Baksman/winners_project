@@ -24,12 +24,13 @@ class DrawerWidget extends StatelessWidget {
             Spacer(),
             Align(
               alignment: Alignment.centerLeft,
-              child: FutureBuilder<Object>(
-                  future: LocalStorage.getImageUrl(),
+              child: FutureBuilder<List<String>>(
+                  future: Future.wait(
+                      [LocalStorage.getImageUrl(), LocalStorage.getMatricNo()]),
                   builder: (context, snapshot) {
-                    if (snapshot.hasError) {
-                      logger.d(snapshot.error);
-                    }
+                    // if (snapshot.hasError) {
+                    //   logger.d(snapshot.error);
+                    // }
                     if (!snapshot.hasData) {
                       return Transform.translate(
                         offset: Offset(0, 0),
@@ -39,6 +40,7 @@ class DrawerWidget extends StatelessWidget {
                         ),
                       );
                     }
+
                     // AppUser _user = AppUser();
                     return Column(
                       mainAxisSize: MainAxisSize.min,
@@ -48,36 +50,39 @@ class DrawerWidget extends StatelessWidget {
                               Navigator.push(context,
                                   MaterialPageRoute(builder: (ctx) {
                                 return PhotoViewScreen(
-                                  imageUrl: snapshot.data,
+                                  imageUrl: snapshot.data[0],
                                 );
                               }));
                             },
-                            child: Container(
-                              margin: EdgeInsets.only(left: 20, bottom: 10),
-                              height: 70,
-                              width: 70,
-                              decoration: BoxDecoration(
-                                  color: Colors.green,
-                                  border:
-                                      Border.all(color: Colors.white, width: 3),
-                                  shape: BoxShape.circle,
-                                  image: DecorationImage(
-                                      image: AssetImage(
-                                          "assets/images/profile_pic.png"))),
+                            child: Hero(
+                              tag: "img",
+                              child: Container(
+                                margin: EdgeInsets.only(left: 20, bottom: 10),
+                                height: 70,
+                                width: 70,
+                                decoration: BoxDecoration(
+                                    color: Colors.green,
+                                    border: Border.all(
+                                        color: Colors.white, width: 3),
+                                    shape: BoxShape.circle,
+                                    image: DecorationImage(
+                                        image: AssetImage(
+                                            "assets/images/profile_pic.png"))),
+                              ),
                             )),
                         SizedBox(
                           height: 10,
                         ),
-                        Text("")
+                        Text(snapshot.data[1])
                       ],
                     );
                   }),
             ),
             _buildItem(context, "Profile", Icons.person, () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (ctx) => EditProfileScreen(
-                    AppUser()
-                  )));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (ctx) => EditProfileScreen(AppUser())));
             }),
             _buildItem(context, "Settings", Icons.settings, () {}),
             _buildItem(context, "About", Icons.menu, () {}),

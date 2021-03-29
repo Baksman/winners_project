@@ -1,6 +1,7 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:project/ui/animation/login_animation.dart';
+import 'package:project/ui/utils/color_utils.dart';
 // import 'package:awesome_loader/awesome_loader.dart';
 import 'package:project/view_model/auth_view_model.dart';
 import 'package:provider/provider.dart';
@@ -15,7 +16,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   String password;
   String password2;
   final _formKey = GlobalKey<FormState>();
-
+  bool showPassword = false;
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthService>(context);
@@ -150,6 +151,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                         return null;
                                       },
                                       decoration: InputDecoration(
+                                          suffixIcon: IconButton(
+                                            color: primaryColor,
+                                            icon: showPassword
+                                                ? Icon(Icons.visibility)
+                                                : Icon(Icons.visibility_off),
+                                            onPressed: () {
+                                              setState(() {
+                                                showPassword = !showPassword;
+                                              });
+                                            },
+                                          ),
                                           border: InputBorder.none,
                                           hintText: "Password",
                                           hintStyle: TextStyle(
@@ -170,6 +182,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                         return null;
                                       },
                                       decoration: InputDecoration(
+                                          suffixIcon: IconButton(
+                                            color: primaryColor,
+                                            icon: showPassword
+                                                ? Icon(Icons.visibility)
+                                                : Icon(Icons.visibility_off),
+                                            onPressed: () {
+                                              setState(() {
+                                                showPassword = !showPassword;
+                                              });
+                                            },
+                                          ),
                                           border: InputBorder.none,
                                           hintText: "Comfirm password",
                                           hintStyle: TextStyle(

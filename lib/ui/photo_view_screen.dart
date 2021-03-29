@@ -6,15 +6,15 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 // import "package:flutter/material.dart";
 // import 'package:photo_view/photo_view.dart';
-import 'package:project/model/user_model.dart';
+// import 'package:project/model/user_model.dart';
 
 class PhotoViewScreen extends StatelessWidget {
   final String imageUrl;
   final File image;
 
-  _getUserImage() {
+  ImageProvider _getUserImage() {
     if (image == null) {
-      if (imageUrl.isEmpty ?? false) {
+      if (imageUrl?.isEmpty ?? false) {
         return AssetImage("assets/images/profile_pic.png");
       }
       return CachedNetworkImageProvider(imageUrl);
@@ -31,8 +31,7 @@ class PhotoViewScreen extends StatelessWidget {
         children: <Widget>[
           Container(
             child: Hero(
-                tag: imageUrl,
-                child: PhotoView(imageProvider: _getUserImage())),
+                tag: "img", child: PhotoView(imageProvider: _getUserImage())),
           ),
           Positioned(
             left: 0,
