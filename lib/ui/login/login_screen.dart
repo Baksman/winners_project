@@ -11,6 +11,8 @@ import 'package:project/ui/utils/color_utils.dart';
 import 'package:project/ui/widget/drawer.dart';
 import 'package:project/view_model/auth_view_model.dart';
 import 'package:provider/provider.dart';
+
+import '../../reset_password.dart';
 // import 'package:project/ui/login/sign/animation/login_animation.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -161,7 +163,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                           String serialisedPass =
                                               val.trim().replaceAll(" ", "");
                                           if (serialisedPass.length < 5) {
-                                            return "too short";
+                                            return "password is too short";
                                           }
                                           password = val.trim();
                                           return null;
@@ -238,23 +240,45 @@ class _LoginScreenState extends State<LoginScreen> {
                           SizedBox(
                             height: 20,
                           ),
-                          FadeAnimation(
-                              1.5,
-                              FlatButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        PageTransition(
-                                            type:
-                                                PageTransitionType.rightToLeft,
-                                            child: SignUpScreen()));
-                                  },
-                                  child: Text(
-                                    "Sign up",
-                                    style: TextStyle(
-                                        color:
-                                            Color.fromRGBO(143, 148, 251, 1)),
-                                  ))),
+                          Row(
+                            children: [
+                              FadeAnimation(
+                                  1.5,
+                                  FlatButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                            context,
+                                            PageTransition(
+                                                type: PageTransitionType
+                                                    .rightToLeft,
+                                                child: SignUpScreen()));
+                                      },
+                                      child: Text(
+                                        "Sign up",
+                                        style: TextStyle(
+                                            color: Color.fromRGBO(
+                                                143, 148, 251, 1)),
+                                      ))),
+                              Spacer(),
+                              FadeAnimation(
+                                  2.0,
+                                  FlatButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                            context,
+                                            PageTransition(
+                                                type: PageTransitionType
+                                                    .rightToLeft,
+                                                child: ResetPassword()));
+                                      },
+                                      child: Text(
+                                        "Reset",
+                                        style: TextStyle(
+                                            color: Color.fromRGBO(
+                                                143, 148, 251, 1)),
+                                      ))),
+                            ],
+                          )
                         ],
                       ),
                     )

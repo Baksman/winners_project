@@ -4,6 +4,7 @@ import 'package:project/database/database_service.dart';
 import 'package:project/model/complaint_model.dart';
 import 'package:project/model/user_model.dart';
 import 'package:project/ui/utils/color_utils.dart';
+import 'package:project/ui/utils/log_utils.dart';
 import 'package:provider/provider.dart';
 
 class AllComplaintScreen extends StatefulWidget {
@@ -22,6 +23,10 @@ class _AllComplaintScreenState extends State<AllComplaintScreen> {
       body: FutureBuilder<List<Complaint>>(
           future: DatabaseService.getUsersComplaints(userID),
           builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              logger.d(snapshot.error);
+              return Text("Error");
+            }
             if (!snapshot.hasData)
               return Center(
                 child: AwesomeLoader(
@@ -29,6 +34,10 @@ class _AllComplaintScreenState extends State<AllComplaintScreen> {
                   loaderType: AwesomeLoader.AwesomeLoader3,
                 ),
               );
+            List<Complaint> complaints = snapshot.data;
+            if (complaints.isEmpty) {
+              return Text("No complaint yet");
+            }
             return SingleChildScrollView(
               child: Column(
                 children: [],

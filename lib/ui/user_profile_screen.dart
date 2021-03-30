@@ -39,6 +39,7 @@ import 'package:project/database/database_service.dart';
 import 'package:project/database/storage_service.dart';
 import 'package:project/model/user_model.dart';
 import 'package:project/ui/photo_view_screen.dart';
+import 'package:project/ui/utils/color_utils.dart';
 
 class EditProfileScreen extends StatefulWidget {
   static final String routeName = "edit_profile_screen";
@@ -93,7 +94,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   // to determine what type of image to  when image is tapped
   ImageProvider _getImage() {
     if (profileImage == null) {
-      if (widget.user.imageUrl.isEmpty ?? false) {
+      if (widget?.user?.imageUrl?.isEmpty ?? true) {
         return AssetImage("assets/images/profile_pic.png");
       }
       return CachedNetworkImageProvider(widget.user.imageUrl);
@@ -146,219 +147,265 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     //  final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     //print(isFreelance);
-    return Scaffold(
-   
-      body: Form(
-        key: _formKey,
-        child: SingleChildScrollView(
-          //key: _scrollKey,
-          physics: BouncingScrollPhysics(),
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              children: <Widget>[
-                Stack(
-                  children: <Widget>[
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) {
-                          return PhotoViewScreen(
-                            image: profileImage,
-                            // user: widget.user,
-                          );
-                        }));
-                      },
-                      child: Hero(
-                        tag: widget.user.uuid,
-                        child: Container(
-                          height: width - 100,
-                          width: width - 100,
-                          decoration: BoxDecoration(
-                              image: DecorationImage(
-                                  image: _getImage(), fit: BoxFit.cover),
-                              borderRadius: BorderRadius.circular(20)),
+    return Theme(
+      data: new ThemeData(
+        primaryColor: primaryColor,
+        primaryColorDark: primaryColor,
+      ),
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0,
+        ),
+        body: Form(
+          key: _formKey,
+          child: SingleChildScrollView(
+            //key: _scrollKey,
+            physics: BouncingScrollPhysics(),
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                children: <Widget>[
+                  Stack(
+                    children: <Widget>[
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) {
+                            return PhotoViewScreen(
+                              image: profileImage,
+                              // imageUrl: "",
+                              // user: widget.user,
+                            );
+                          }));
+                        },
+                        child: Hero(
+                          transitionOnUserGestures: true,
+                          tag: "img",
+                          child: Container(
+                            height: width - 100,
+                            width: width - 100,
+                            decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    image: _getImage(), fit: BoxFit.cover),
+                                borderRadius: BorderRadius.circular(20)),
+                          ),
                         ),
                       ),
-                    ),
-                    Positioned(
-                        top: width / 2,
-                        right: width / 2 - 65,
-                        child: Container(
-                          // width: 40,
-                          // height: 40,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              //  color: Colors.black,
-                              gradient: LinearGradient(colors: [
-                                isDark ? Colors.black : Colors.teal,
-                                Colors.white
-                              ])),
+                      Positioned(
+                          top: width / 2,
+                          right: width / 2 - 65,
+                          child: Container(
+                            // width: 40,
+                            // height: 40,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                //  color: Colors.black,
+                                gradient: LinearGradient(
+                                    colors: [primaryColor, Colors.white])),
 
-                          child: IconButton(
-                            color: Colors.white,
-                            icon: Icon(Icons.camera_enhance),
-                            onPressed: () {
-                              // PermissionHandler.checkIfPermitted(
-                              //     _hangleImage, context, Permission.storage);
-                            },
-                            iconSize: 30,
-                          ),
-                        )),
-                  ],
-                ),
-                SizedBox(height: 10),
-                TextFormField(
-                  initialValue: widget.user.name,
-                  maxLength: 50,
-                  onFieldSubmitted: (String val) {
-                    name = val;
-                  },
-                  validator: (String newName) {
-                    if (newName.trim().length < 3) {
-                      return "name too short";
-                    } else if (!newName.contains(new RegExp(r"[a-zA-Z]"))) {
-                      return "invalid name";
-                    }
-                    return null;
-                  },
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.all(10),
-                    icon: Icon(Icons.person),
-                  ),
-                  onSaved: (String newName) {
-                    name = newName.trim();
-                  },
-                ),
-                SizedBox(height: 10),
-                TextFormField(
-                  enabled: false,
-                  initialValue: widget.user.email,
-                  //keyboardType: Ke,
-                  maxLines: null,
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.all(10),
-                    icon: Icon(Icons.email),
-                  ),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                GestureDetector(
-                  onTap: () {
-                    _openGenderSheet(isDark);
-                  },
-                  child: AbsorbPointer(
-                    child: TextFormField(
-                      controller: _genderController,
-                      decoration: InputDecoration(
-                          hintText: "gender",
-                          contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                          icon: Icon(Icons.person_pin)),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 10),
-                TextFormField(
-                  initialValue: widget.user.name ?? "",
-                  //keyboardType: Ke,
-                  maxLines: null,
-                  maxLength: 100,
-                  decoration: InputDecoration(
-                    hintText: "bio",
-                    contentPadding: EdgeInsets.all(10),
-                  ),
-                  onSaved: (String newBio) {
-                    bio = newBio.trim();
-                    print(bio);
-                  },
-                ),
-                SizedBox(height: 10),
-                // GestureDetector(
-                //     onTap: () {
-                //       DatePicker.showDatePicker(
-                //         context,
-                //         pickerTheme: DateTimePickerTheme.Default,
-                //         onConfirm: (date, _) {
-                //           var fmtdate = DateFormat.yMMMMd("en_us").format(date);
-                //           _dateController.text = "$fmtdate";
-                //           _birthday = Timestamp.fromDate(date);
-                //         },
-                //         minDateTime: DateTime(
-                //           1920,
-                //           1,
-                //           1,
-                //           0,
-                //         ),
-                //         maxDateTime: DateTime(2020, 1, 1, 0),
-                //       );
-                //     },
-                //     child: AbsorbPointer(
-                //         child: TextFormField(
-                //       controller: _dateController,
-                //       decoration: InputDecoration(
-                //         contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                //         hintText: "Birthday",
-                //         icon: Icon(Icons.date_range),
-                //       ),
-                //     ))),
-                SizedBox(
-                  height: 10,
-                ),
-                TextFormField(
-                  // controller: _locationController,
-                  //initialValue: widget.user.location ?? "",
-                  keyboardType: TextInputType.url,
-                  maxLines: null,
-                  maxLength: 100,
-
-                  decoration: InputDecoration(
-                    hintText: "location",
-                    counterText: "",
-                    contentPadding: EdgeInsets.all(10),
-                    icon: Icon(Icons.location_on),
-                  ),
-                  onSaved: (String newLocation) {
-                    // location = newLocation;
-                  },
-                ),
-                SizedBox(height: 20),
-
-                // InternationalPhoneNumberInput(
-                //     ignoreBlank: true,
-                //     initialCountry2LetterCode: widget.user.countryIso ?? "NG",
-                //     textFieldController: _phoneNumberController,
-                //     autoValidate: true,
-                //     countries: countryIso,
-                //     onInputChanged: _onInputChanged),
-                SizedBox(
-                  height: 10,
-                ),
-                Container(
-                  width: 160,
-                  height: 50,
-                  child: RaisedButton(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      color: Colors.teal,
-                      disabledColor: Colors.teal,
-                      child: !isLoading
-                          ? AnimatedSwitcher(
-                              duration: Duration(milliseconds: 160),
-                              child: Text(
-                                "Submit",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w700),
-                              ))
-                          : CircularProgressIndicator(
-                              backgroundColor: Colors.teal,
+                            child: IconButton(
+                              color: Colors.white,
+                              icon: Icon(Icons.camera_enhance),
+                              onPressed: () {
+                                // PermissionHandler.checkIfPermitted(
+                                //     _hangleImage, context, Permission.storage);
+                              },
+                              iconSize: 30,
                             ),
-                      onPressed: !isLoading ? _submit : null),
-                )
-              ],
+                          )),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  TextFormField(
+                    // initialValue: widget.user.name,
+
+                    maxLength: 50,
+                    onFieldSubmitted: (String val) {
+                      name = val;
+                    },
+                    validator: (String val) {
+                      if (val.trim().length < 3) {
+                        return "name too short";
+                      } else if (!val.contains(new RegExp(r"[a-zA-Z]"))) {
+                        return "invalid name";
+                      }
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.all(10),
+                      hintText: "name",
+                      icon: Icon(Icons.person),
+                    ),
+                    onSaved: (String val) {
+                      name = val.trim();
+                    },
+                  ),
+                  SizedBox(height: 10),
+                  TextFormField(
+                    // initialValue: widget.user.name ?? "",
+                    //keyboardType: Ke,
+                    maxLines: null,
+                    maxLength: 12,
+                    decoration: InputDecoration(
+                      icon: Icon(Icons.school),
+                      hintText: "matric No",
+                      contentPadding: EdgeInsets.all(10),
+                    ),
+                    onSaved: (String newBio) {
+                      bio = newBio.trim();
+                      print(bio);
+                    },
+                  ),
+                  SizedBox(height: 10),
+                  TextFormField(
+                    // initialValue: widget.user.name ?? "",
+                    //keyboardType: Ke,
+                    maxLines: null,
+              
+                    decoration: InputDecoration(
+                      icon: Icon(Icons.stairs),
+                      hintText: "Faculty",
+                      contentPadding: EdgeInsets.all(10),
+                    ),
+                    onSaved: (String newBio) {
+                      bio = newBio.trim();
+                      print(bio);
+                    },
+                  ),
+                  SizedBox(height: 10),
+                  TextFormField(
+                    // initialValue: widget.user.name ?? "",
+                    //keyboardType: Ke,
+                    maxLines: null,
+
+                    decoration: InputDecoration(
+                      icon: Icon(Icons.class_),
+                      hintText: "Department",
+                      contentPadding: EdgeInsets.all(10),
+                    ),
+                    onSaved: (String newBio) {
+                      bio = newBio.trim();
+                      print(bio);
+                    },
+                  ),
+                  SizedBox(height: 10),
+                  TextFormField(
+                    enabled: false,
+                    // initialValue: widget.user.email,
+                    //keyboardType: Ke,
+                    maxLines: null,
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.all(10),
+                      icon: Icon(Icons.email),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      _openGenderSheet(isDark);
+                    },
+                    child: AbsorbPointer(
+                      child: TextFormField(
+                        controller: _genderController,
+                        decoration: InputDecoration(
+                            hintText: "gender",
+                            contentPadding:
+                                EdgeInsets.symmetric(horizontal: 10),
+                            icon: Icon(Icons.person_pin)),
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(height: 10),
+                  // GestureDetector(
+                  //     onTap: () {
+                  //       DatePicker.showDatePicker(
+                  //         context,
+                  //         pickerTheme: DateTimePickerTheme.Default,
+                  //         onConfirm: (date, _) {
+                  //           var fmtdate = DateFormat.yMMMMd("en_us").format(date);
+                  //           _dateController.text = "$fmtdate";
+                  //           _birthday = Timestamp.fromDate(date);
+                  //         },
+                  //         minDateTime: DateTime(
+                  //           1920,
+                  //           1,
+                  //           1,
+                  //           0,
+                  //         ),
+                  //         maxDateTime: DateTime(2020, 1, 1, 0),
+                  //       );
+                  //     },
+                  //     child: AbsorbPointer(
+                  //         child: TextFormField(
+                  //       controller: _dateController,
+                  //       decoration: InputDecoration(
+                  //         contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                  //         hintText: "Birthday",
+                  //         icon: Icon(Icons.date_range),
+                  //       ),
+                  //     ))),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  TextFormField(
+                    // controller: _locationController,
+                    //initialValue: widget.user.location ?? "",
+                    keyboardType: TextInputType.url,
+                    maxLines: null,
+                    maxLength: 100,
+
+                    decoration: InputDecoration(
+                      hintText: "hostel",
+                      counterText: "",
+                      contentPadding: EdgeInsets.all(10),
+                      icon: Icon(Icons.house_outlined),
+                    ),
+                    onSaved: (String newLocation) {
+                      // location = newLocation;
+                    },
+                  ),
+                  SizedBox(height: 20),
+
+                  // InternationalPhoneNumberInput(
+                  //     ignoreBlank: true,
+                  //     initialCountry2LetterCode: widget.user.countryIso ?? "NG",
+                  //     textFieldController: _phoneNumberController,
+                  //     autoValidate: true,
+                  //     countries: countryIso,
+                  //     onInputChanged: _onInputChanged),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Container(
+                    width: 120,
+                    height: 45,
+                    child: RaisedButton(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        color: primaryColor,
+                        // disabledColor: Colors.teal,
+                        child: !isLoading
+                            ? AnimatedSwitcher(
+                                duration: Duration(milliseconds: 160),
+                                child: Text(
+                                  "Submit",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w700),
+                                ))
+                            : CircularProgressIndicator(
+                                backgroundColor: Colors.teal,
+                              ),
+                        onPressed: !isLoading ? _submit : null),
+                  )
+                ],
+              ),
             ),
           ),
         ),

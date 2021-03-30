@@ -3,12 +3,17 @@ import 'package:awesome_loader/awesome_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:kt_drawer_menu/kt_drawer_menu.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:project/database/database_service.dart';
 import 'package:project/database/local_storage.dart';
+import 'package:project/model/complaint_model.dart';
 import 'package:project/model/user_model.dart';
 import 'package:project/ui/all_complaint_screen.dart';
 import 'package:project/ui/complaint_screen.dart';
 import 'package:project/ui/utils/color_utils.dart';
 import 'package:project/ui/widget/drawer.dart';
+import 'package:provider/provider.dart';
+
+import 'animation/login_animation.dart';
 // import 'package:provider/provider.dart';
 
 class Home extends StatelessWidget {
@@ -54,6 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
+    final uuid = Provider.of<AppUser>(context).uuid;
     return Scaffold(
       appBar: AppBar(
         title: Text("Dashbaord"),
@@ -107,43 +113,49 @@ class _HomeScreenState extends State<HomeScreen> {
               SizedBox(
                 height: 30,
               ),
-              Text(
-                "ABU HOSTEL CORRESPONDER",
-                style: TextStyle(
-                    color: primaryColor,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold),
+              FadeAnimation(
+                1,
+                Text(
+                  "ABU HOSTEL CORRESPONDER",
+                  style: TextStyle(
+                      color: primaryColor,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold),
+                ),
               ),
               SizedBox(height: height / 7),
-              GestureDetector(
-                onTap: () {
-                  // ComplaintScreen
-                  Navigator.push(
-                      context,
-                      PageTransition(
-                          type: PageTransitionType.rightToLeft,
-                          child: ComplaintScreen()));
-                },
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    height: 50,
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.add,
-                          color: primaryColor,
-                        ),
-                        SizedBox(
-                          width: 20,
-                        ),
-                        Text("New complaint",
-                            style: TextStyle(
-                                color: primaryColor,
-                                fontWeight: FontWeight.bold))
-                      ],
+              FadeAnimation(
+                1.2,
+                GestureDetector(
+                  onTap: () {
+                    // ComplaintScreen
+                    Navigator.push(
+                        context,
+                        PageTransition(
+                            type: PageTransitionType.rightToLeft,
+                            child: ComplaintScreen()));
+                  },
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      height: 50,
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.add,
+                            color: primaryColor,
+                          ),
+                          SizedBox(
+                            width: 20,
+                          ),
+                          Text("New complaint",
+                              style: TextStyle(
+                                  color: primaryColor,
+                                  fontWeight: FontWeight.bold))
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -151,43 +163,75 @@ class _HomeScreenState extends State<HomeScreen> {
               SizedBox(
                 height: 20,
               ),
-              GestureDetector(
-                // AllComplaintScreen
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      PageTransition(
-                          type: PageTransitionType.rightToLeft,
-                          child: AllComplaintScreen()));
-                },
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    height: 50,
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.download_sharp,
-                          color: primaryColor,
-                        ),
-                        SizedBox(
-                          width: 20,
-                        ),
-                        Text("All complaint",
-                            style: TextStyle(
-                                color: primaryColor,
-                                fontWeight: FontWeight.bold))
-                      ],
+              FadeAnimation(
+                1.5,
+                GestureDetector(
+                  // AllComplaintScreen
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        PageTransition(
+                            type: PageTransitionType.rightToLeft,
+                            child: AllComplaintScreen()));
+                  },
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      height: 50,
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.download_sharp,
+                            color: primaryColor,
+                          ),
+                          SizedBox(
+                            width: 20,
+                          ),
+                          Text("All complaint",
+                              style: TextStyle(
+                                  color: primaryColor,
+                                  fontWeight: FontWeight.bold))
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
+              SizedBox(
+                height: 10,
+              ),
+              Transform.translate(
+                offset: Offset(10, 0),
+                child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Recent complaint",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    )),
+              ),
 
-              Align(
-                  alignment: Alignment.centerLeft,
-                  child: FlatButton(child: Text("Recent complain")))
+              FutureBuilder(
+                  future: DatabaseService.getRecentComplaints(uuid),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return Center(
+                        child: AwesomeLoader(
+                          color: primaryColor,
+                          loaderType: AwesomeLoader.AwesomeLoader3,
+                        ),
+                      );
+                    }
+                    List<Complaint> complaint = snapshot.data;
+                    if (complaint.isEmpty) {
+                      return Padding(
+                        padding: EdgeInsets.symmetric(vertical: 30),
+                        child: Text("You dont have any complaint yet"),
+                      );
+                    }
+                    return Text("yeahj");
+                  })
               // SizedBox(
               //   width: 350.0,
               //   child: TextLiquidFill(

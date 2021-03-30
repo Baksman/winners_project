@@ -27,7 +27,7 @@ class MainWidget extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => AuthService()),
         Provider(create: (_) => AppUser()),
-        Provider(create: (_) => DatabaseService()),
+        ChangeNotifierProvider(create: (_) => DatabaseService()),
         // DatabaseService
       ],
       child: MaterialApp(
@@ -57,7 +57,10 @@ class MainWidget extends StatelessWidget {
             if (user != null) {
               Provider.of<AppUser>(ctx).uuid = user.uid;
             }
-            return user == null ? LoginScreen() : Home();
+            // check if user has already logged in and verified there email
+            return (user == null || !user.emailVerified)
+                ? LoginScreen()
+                : Home();
           },
         ),
       ),

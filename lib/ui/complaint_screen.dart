@@ -1,49 +1,29 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:project/database/database_service.dart';
+import 'package:project/model/complaint_model.dart';
+import 'package:project/model/user_model.dart';
 import 'package:project/ui/utils/color_utils.dart';
+import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
+import '../hostels.dart';
 
 class ComplaintScreen extends StatefulWidget {
   @override
   _ComplaintScreenState createState() => _ComplaintScreenState();
 }
 
-// showCupertinoModalPopup(
-//   context: context,
-//   builder: (BuildContext context) => CupertinoActionSheet(
-//       title: const Text('Choose Options'),
-//       message: const Text('Your options are '),
-//       actions: <Widget>[
-//         CupertinoActionSheetAction(
-//           child: const Text('One'),
-//           onPressed: () {
-//             Navigator.pop(context, 'One');
-//           },
-//         ),
-//         CupertinoActionSheetAction(
-//           child: const Text('Two'),
-//           onPressed: () {
-//             Navigator.pop(context, 'Two');
-//           },
-//         )
-//       ],
-//       ),
-// );
 class _ComplaintScreenState extends State<ComplaintScreen> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController _hostelController = TextEditingController();
-  List<String> _hostels = [
-    "Danfodio hall",
-    "Ribadu hall",
-    "Alexander hall",
-    "Ribadu",
-    "Suleiman hall",
-    "Amina hall",
-    "Shehu idris",
-    "Aliko dangote",
-    "ICSA/Ramat"
-  ];
+  String hostel;
+  String title;
+  String description;
   @override
   Widget build(BuildContext context) {
+    final dbProvider = Provider.of<DatabaseService>(context);
+    final uuid = Provider.of<AppUser>(context).uuid;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: primaryColor,
@@ -71,7 +51,7 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
                               CupertinoActionSheet(
                                 title: const Text('Choose your hostel'),
                                 // message: const Text('Your options are '),
-                                actions: _hostels
+                                actions: hostels
                                     .map((e) => CupertinoActionSheetAction(
                                           child: Text(e),
                                           onPressed: () {
@@ -116,6 +96,7 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
                           if (validatedInput.isEmpty) {
                             return "required";
                           }
+                          hostel = val;
                           return null;
                         },
                         decoration: InputDecoration(
@@ -150,6 +131,7 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
                       if (validatedInput.length < 5) {
                         return "invalid too short";
                       }
+                      title = validatedInput;
                       return null;
                     },
                     decoration: InputDecoration(
@@ -180,7 +162,7 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: Color(0xFFEAEDF6),
-                      hintText: '',
+                      hintText: 'description',
                       border: InputBorder.none,
                     ),
                     validator: (val) {
@@ -188,6 +170,7 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
                       if (validatedInput.length < 10) {
                         return "invalid too short";
                       }
+                      description = validatedInput;
                       return null;
                     },
                   ),
@@ -224,17 +207,37 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
                 child: Row(children: [
                   Expanded(
                     child: RaisedButton(
+                      padding: EdgeInsets.symmetric(vertical: 12),
                       color: primaryColor,
-                      onPressed: () {
-                        if (_formKey.currentState.validate()) {}
-                      },
+                      onPressed: dbProvider.isLoading
+                          ? null
+                          : () async {
+                              if (_formKey.currentState.validate()) {
+                                String complaintID = Uuid().v4();
+                                Complaint complaint = Complaint(
+                                    title: title,
+                                    hostel: hostel,
+                                    userId: uuid,
+                                    complaintID: complaintID,
+                                    // timeStamp: null,
+                                    desc: description);
+                                bool res = await dbProvider.addCompliant(
+                                    complaint, context);
+                                if (res ?? false) {
+                                  Navigator.pop(context);
+                                }
+                              }
+                            },
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10)),
-                      child: Text(
-                        "Submit",
-                        style: TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold),
-                      ),
+                      child: dbProvider.isLoading
+                          ? CircularProgressIndicator()
+                          : Text(
+                              "Submit",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
+                            ),
                     ),
                   ),
                 ]),

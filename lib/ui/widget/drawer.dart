@@ -37,7 +37,7 @@ class DrawerWidget extends StatelessWidget {
                         child: AwesomeLoader(
                           color: Colors.white,
                           loaderType: AwesomeLoader.AwesomeLoader3,
-                        ),
+                        ), 
                       );
                     }
 
@@ -56,6 +56,7 @@ class DrawerWidget extends StatelessWidget {
                             },
                             child: Hero(
                               tag: "img",
+                              transitionOnUserGestures: true,
                               child: Container(
                                 margin: EdgeInsets.only(left: 20, bottom: 10),
                                 height: 70,

@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class Complaint {
@@ -8,15 +8,15 @@ class Complaint {
   final String userId;
   final String complaintID;
   final String desc;
-  final String timeStamp;
+  final Timestamp timeStamp;
 
   Complaint({
     @required this.title,
     @required this.hostel,
     @required this.userId,
     @required this.complaintID,
-    @required this.timeStamp,
     @required this.desc,
+    this.timeStamp
   });
 
   Complaint copyWith(
@@ -27,12 +27,12 @@ class Complaint {
       String desc,
       String timeStamp}) {
     return Complaint(
-        title: title ?? this.title,
-        hostel: hostel ?? this.hostel,
-        userId: userId ?? this.userId,
-        complaintID: complaintID ?? this.complaintID,
-        desc: desc ?? this.desc,
-        timeStamp: timeStamp ?? this.timeStamp);
+      title: title ?? this.title,
+      hostel: hostel ?? this.hostel,
+      userId: userId ?? this.userId,
+      complaintID: complaintID ?? this.complaintID,
+      desc: desc ?? this.desc,
+    );
   }
 
   Map<String, dynamic> toMap() {
@@ -42,7 +42,7 @@ class Complaint {
       'userId': userId,
       'complaintID': complaintID,
       'desc': desc,
-      "timeStamp": timeStamp
+      "timeStamp": Timestamp.now()
     };
   }
 
@@ -53,7 +53,8 @@ class Complaint {
         userId: map['userId'],
         complaintID: map['complaintID'],
         desc: map['desc'],
-        timeStamp: map["timeStamp"]);
+        // timeStamp: map["timeStamp"].toIso8601String()
+        );
   }
 
   String toJson() => json.encode(toMap());

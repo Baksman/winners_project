@@ -1,53 +1,73 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:project/model/complaint_model.dart';
 import 'package:project/model/user_model.dart';
+import 'package:project/ui/utils/flush_bar_utils.dart';
 import 'package:project/ui/utils/log_utils.dart';
+// import 'package:project/ui/utils/log_utils.dart';
 
-class DatabaseService {
+class DatabaseService extends ChangeNotifier {
   static FirebaseFirestore firestore = FirebaseFirestore.instance;
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
 
   static Future<void> addUser(AppUser user) async {
-    logger.i(user.uuid);
-    await firestore.doc("new").collection("boys").add({"jj": "hhd"});
-    logger.i("got here");
-
-    await firestore
-        .doc("users")
-        .collection(user.uuid)
-        .doc("mydata")
-        .set(user.toJson());
+    await firestore.collection("users").doc(user.uuid).set(user.toJson());
   }
 
   static Future<AppUser> getUserData(String uuid) async {
     DocumentSnapshot docSnap =
-        await firestore.doc("users").collection(uuid).doc("my_data").get();
+        await firestore.collection("users").doc(uuid).get();
     return AppUser.fromMap(docSnap.data());
   }
 
-  static Future<void> addCompliant(Complaint complaint) async {
-    await firestore
-        .doc("compliant")
-        .collection(complaint.userId)
-        .add(complaint.toMap());
+  Future<bool> addCompliant(Complaint complaint, BuildContext context) async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      await firestore
+          .collection("compliant")
+          .doc(complaint.userId)
+          .collection("my_complaint")
+          .doc(complaint.complaintID)
+          .set(complaint.toMap());
+      return true;
+    } catch (e) {
+      show_flushbar("Error occured please try again").show(context);
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
 
   static Future<List<Complaint>> getUsersComplaints(String userId) async {
-    QuerySnapshot qSnap =
-        await firestore.doc("compliant").collection(userId).get();
+    QuerySnapshot qSnap = await firestore
+        .collection("compliant")
+        .doc(userId)
+        .collection("my_complaint")
+        .get();
     List<Complaint> complaints = [];
-    qSnap.docs.forEach((element) {
-      Complaint.fromMap(element.data());
+  
+    logger.d( qSnap.docs.first.data());
+    qSnap.docs.map((element) {
+      complaints.add(Complaint.fromMap(element.data()));
     });
+        logger.d("got here");
     return complaints;
   }
 
   static Future<List<Complaint>> getRecentComplaints(String userId) async {
-    QuerySnapshot qSnap =
-        await firestore.doc("compliant").collection(userId).get();
+    Stream<QuerySnapshot> qSnap = firestore
+        .collection("complaint")
+        .doc(userId)
+        .collection("my_complaint")
+        .snapshots();
+
     List<Complaint> complaints = [];
-    qSnap.docs.take(3).toList().forEach((element) {
-      Complaint.fromMap(element.data());
-    });
+    qSnap.map((event) =>
+        event.docs.map((e) => complaints.add(Complaint.fromMap(e.data()))));
+
     return complaints;
   }
 }

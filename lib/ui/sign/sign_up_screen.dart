@@ -145,7 +145,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                         String serialisedPass =
                                             val.trim().replaceAll(" ", "");
                                         if (serialisedPass.length < 5) {
-                                          return "too short";
+                                          return "password is too short";
                                         }
                                         password = val;
                                         return null;

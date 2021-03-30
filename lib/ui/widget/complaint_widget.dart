@@ -50,7 +50,7 @@ class _ComplaintItemState extends State<ComplaintItem> {
                     children: [
                       Text(
                         // extension method todate
-                        widget.complaint.timeStamp.toTime,
+                        widget.complaint.timeStamp.toString(),
                         style: TextStyle(
                             fontWeight: FontWeight.w600, fontSize: 13),
                       ),
@@ -63,7 +63,7 @@ class _ComplaintItemState extends State<ComplaintItem> {
                               shape: BoxShape.circle)),
                       SizedBox(width: 5),
                       Text(
-                        widget.complaint.timeStamp.toDate,
+                        widget.complaint.timeStamp.toString(),
                         style: TextStyle(fontWeight: FontWeight.w600),
                       ),
                     ],
