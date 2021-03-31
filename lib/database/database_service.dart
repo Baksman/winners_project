@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:project/model/complaint_model.dart';
@@ -48,26 +50,36 @@ class DatabaseService extends ChangeNotifier {
         .collection("my_complaint")
         .get();
     List<Complaint> complaints = [];
-  
-    logger.d( qSnap.docs.first.data());
+
+    logger.d(qSnap.docs.last.get("hostel"));
     qSnap.docs.map((element) {
+      logger.d(element.id);
       complaints.add(Complaint.fromMap(element.data()));
-    });
-        logger.d("got here");
+    }).toList();
+    logger.d("got here");
     return complaints;
   }
 
-  static Future<List<Complaint>> getRecentComplaints(String userId) async {
+   Stream<QuerySnapshot> getRecentComplaints(String userId) {
+     
     Stream<QuerySnapshot> qSnap = firestore
         .collection("complaint")
         .doc(userId)
         .collection("my_complaint")
+        .limit(3)
         .snapshots();
-
-    List<Complaint> complaints = [];
-    qSnap.map((event) =>
-        event.docs.map((e) => complaints.add(Complaint.fromMap(e.data()))));
-
-    return complaints;
+    return qSnap;
+    //   logger.d(userId);
+    //   qSnap.length.then((value) => logger.d(value));
+    //   logger.d("got here");
+    // qSnap.first.then((value) => logger.d(value.size));
+    //   // List<Complaint> complaints = [];
+    //   qSnap.listen((event) {
+    //     event.docs
+    //         .map((e) => streamController.sink.add(Complaint.fromMap(e.data())))
+    //         .toList();
+    //   });
+    //   streamController.stream.length.then((value) => logger.d(value));
+    //   return streamController.stream;
   }
 }

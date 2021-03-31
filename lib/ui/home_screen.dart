@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:awesome_loader/awesome_loader.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:kt_drawer_menu/kt_drawer_menu.dart';
 import 'package:page_transition/page_transition.dart';
@@ -10,6 +13,8 @@ import 'package:project/model/user_model.dart';
 import 'package:project/ui/all_complaint_screen.dart';
 import 'package:project/ui/complaint_screen.dart';
 import 'package:project/ui/utils/color_utils.dart';
+import 'package:project/ui/utils/log_utils.dart';
+import 'package:project/ui/widget/complaint_widget.dart';
 import 'package:project/ui/widget/drawer.dart';
 import 'package:provider/provider.dart';
 
@@ -56,6 +61,21 @@ class _HomeScreenState extends State<HomeScreen> {
   //   drawer: DrawerPage(),
   //   content: HomePage(),
   // );
+  StreamController<Complaint> _streamController;
+  List<Complaint> complaints = [];
+  @override
+  void initState() {
+    _streamController = StreamController.broadcast();
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _streamController.close();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
@@ -127,13 +147,14 @@ class _HomeScreenState extends State<HomeScreen> {
               FadeAnimation(
                 1.2,
                 GestureDetector(
-                  onTap: () {
+                  onTap: () async {
                     // ComplaintScreen
-                    Navigator.push(
+                    await Navigator.push(
                         context,
                         PageTransition(
                             type: PageTransitionType.rightToLeft,
                             child: ComplaintScreen()));
+                    setState(() {});
                   },
                   child: Card(
                     shape: RoundedRectangleBorder(
@@ -212,10 +233,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     )),
               ),
 
-              FutureBuilder(
-                  future: DatabaseService.getRecentComplaints(uuid),
+              FutureBuilder<List<Complaint>>(
+                  future: DatabaseService.getUsersComplaints(uuid),
                   builder: (context, snapshot) {
-                    if (!snapshot.hasData) {
+                    if (snapshot.hasError) {
+                      logger.d(snapshot.error);
+                      return Text("error");
+                    } else if (!snapshot.hasData) {
                       return Center(
                         child: AwesomeLoader(
                           color: primaryColor,
@@ -223,14 +247,16 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       );
                     }
-                    List<Complaint> complaint = snapshot.data;
-                    if (complaint.isEmpty) {
-                      return Padding(
-                        padding: EdgeInsets.symmetric(vertical: 30),
-                        child: Text("You dont have any complaint yet"),
-                      );
-                    }
-                    return Text("yeahj");
+
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: snapshot.data.length,
+                      itemBuilder: (ctx, index) {
+                        return Theme(
+                          data: ThemeData(primaryColor: primaryColor),
+                          child: ComplaintItem(complaint: snapshot.data[index]));
+                      },
+                    );
                   })
               // SizedBox(
               //   width: 350.0,

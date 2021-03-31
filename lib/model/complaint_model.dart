@@ -10,14 +10,13 @@ class Complaint {
   final String desc;
   final Timestamp timeStamp;
 
-  Complaint({
-    @required this.title,
-    @required this.hostel,
-    @required this.userId,
-    @required this.complaintID,
-    @required this.desc,
-    this.timeStamp
-  });
+  Complaint(
+      {@required this.title,
+      @required this.hostel,
+      @required this.userId,
+      @required this.complaintID,
+      @required this.desc,
+      this.timeStamp});
 
   Complaint copyWith(
       {String title,
@@ -53,8 +52,7 @@ class Complaint {
         userId: map['userId'],
         complaintID: map['complaintID'],
         desc: map['desc'],
-        // timeStamp: map["timeStamp"].toIso8601String()
-        );
+        timeStamp: map["timeStamp"]);
   }
 
   String toJson() => json.encode(toMap());

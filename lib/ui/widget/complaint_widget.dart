@@ -1,6 +1,6 @@
 // ]import 'package:Dantownapp/repository/rest_service.dart';
 import 'package:flutter/material.dart';
-import 'package:project/ui/utils/date_extension.dart';
+import 'package:project/ui/utils/date_extension.dart' as td;
 // import "package:Dantownapp/model/notifications.dart" as notif;
 // import 'package:flutter_svg/flutter_svg.dart';
 
@@ -34,10 +34,14 @@ class _ComplaintItemState extends State<ComplaintItem> {
           )),
           children: [
             Container(
-              padding: EdgeInsets.only(left: 30, top: 10, right: 10),
+              margin: EdgeInsets.only(left: 30, top: 10, right: 10),
               child: Column(children: [
-                Text(widget.complaint.desc,
-                    style: TextStyle(color: Color(0xff78839C), fontSize: 13)),
+                Align(
+                  alignment: Alignment.centerLeft,
+                                  child: Text(widget.complaint.desc,
+                      
+                      style: TextStyle(color: Color(0xff78839C), fontSize: 13)),
+                ),
                 SizedBox(height: 10),
                 Divider(
                   height: 2,
@@ -50,9 +54,9 @@ class _ComplaintItemState extends State<ComplaintItem> {
                     children: [
                       Text(
                         // extension method todate
-                        widget.complaint.timeStamp.toString(),
+                        widget.complaint.timeStamp.toDate().toString().toTime,
                         style: TextStyle(
-                            fontWeight: FontWeight.w600, fontSize: 13),
+                            fontWeight: FontWeight.w600, fontSize: 11),
                       ),
                       SizedBox(width: 5),
                       Container(
@@ -63,8 +67,8 @@ class _ComplaintItemState extends State<ComplaintItem> {
                               shape: BoxShape.circle)),
                       SizedBox(width: 5),
                       Text(
-                        widget.complaint.timeStamp.toString(),
-                        style: TextStyle(fontWeight: FontWeight.w600),
+                        widget.complaint.timeStamp.toDate().toString().toDate,
+                        style: TextStyle(fontWeight: FontWeight.w600, fontSize: 11),
                       ),
                     ],
                   ),

@@ -5,6 +5,7 @@ import 'package:project/model/complaint_model.dart';
 import 'package:project/model/user_model.dart';
 import 'package:project/ui/utils/color_utils.dart';
 import 'package:project/ui/utils/log_utils.dart';
+import 'package:project/ui/widget/complaint_widget.dart';
 import 'package:provider/provider.dart';
 
 class AllComplaintScreen extends StatefulWidget {
@@ -35,12 +36,20 @@ class _AllComplaintScreenState extends State<AllComplaintScreen> {
                 ),
               );
             List<Complaint> complaints = snapshot.data;
+            logger.d(complaints.length);
             if (complaints.isEmpty) {
               return Text("No complaint yet");
             }
             return SingleChildScrollView(
               child: Column(
-                children: [],
+                children: complaints
+                    .map((e) => Theme(
+                          data: ThemeData(primaryColor: primaryColor),
+                          child: ComplaintItem(
+                            complaint: e,
+                          ),
+                        ))
+                    .toList(),
               ),
             );
           }),

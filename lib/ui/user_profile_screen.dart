@@ -27,6 +27,7 @@
 
 import 'dart:io';
 
+import 'package:awesome_loader/awesome_loader.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -40,6 +41,8 @@ import 'package:project/database/storage_service.dart';
 import 'package:project/model/user_model.dart';
 import 'package:project/ui/photo_view_screen.dart';
 import 'package:project/ui/utils/color_utils.dart';
+import 'package:project/ui/utils/log_utils.dart';
+import 'package:provider/provider.dart';
 
 class EditProfileScreen extends StatefulWidget {
   static final String routeName = "edit_profile_screen";
@@ -57,30 +60,27 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     "Male",
     "Female",
   ];
-  bool isLocationTapped = false;
+  String matricNo;
+  String faculty;
+  String dept;
+  String name = "";
 
+  bool isLocationTapped = false;
+  final nameRegex = new RegExp(r"[a-zA-Z \s]");
   final _formKey = GlobalKey<FormState>();
-  TextEditingController _phoneNumberController;
-  TextEditingController _departmentController;
-  TextEditingController _matricNumberController;
-  TextEditingController _roomNumberController;
-  TextEditingController _nameController;
+  TextEditingController hostel = TextEditingController();
+
   TextEditingController _genderController;
   // TextEditingController _dateController;
   bool isLoading = false;
-  String bio = "";
-  String workAt = "";
-  String name = "";
-  String phoneNumber = "";
-  Timestamp _birthday;
 
   //bool isFreelance;
   // File pdf;
   final picker = ImagePicker();
-  String genderName = "";
+
   File profileImage;
   String gender;
-  String _countryIso;
+  // String _countryIso;
 
   void _hangleImage() async {
     PickedFile file = await picker.getImage(source: ImageSource.gallery);
@@ -142,7 +142,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Widget build(BuildContext context) {
     bool isDark = Theme.of(context).brightness == Brightness.dark;
     // prd = ProgressDialog(context, isDismissible: true);
-
+    final uuid = Provider.of<AppUser>(context).uuid;
     // prd.style(message: "Submitting...");
     //  final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
@@ -157,258 +157,292 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           backgroundColor: Colors.white,
           elevation: 0,
         ),
-        body: Form(
-          key: _formKey,
-          child: SingleChildScrollView(
-            //key: _scrollKey,
-            physics: BouncingScrollPhysics(),
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                children: <Widget>[
-                  Stack(
-                    children: <Widget>[
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) {
-                            return PhotoViewScreen(
-                              image: profileImage,
-                              // imageUrl: "",
-                              // user: widget.user,
-                            );
-                          }));
-                        },
-                        child: Hero(
-                          transitionOnUserGestures: true,
-                          tag: "img",
-                          child: Container(
-                            height: width - 100,
-                            width: width - 100,
-                            decoration: BoxDecoration(
-                                image: DecorationImage(
-                                    image: _getImage(), fit: BoxFit.cover),
-                                borderRadius: BorderRadius.circular(20)),
+        body: FutureBuilder<AppUser>(
+            future: DatabaseService.getUserData(uuid),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                logger.d(snapshot.error);
+              }
+              if (!snapshot.hasData) {
+                return Center(
+                    child: AwesomeLoader(
+                  color: primaryColor,
+                  loaderType: AwesomeLoader.AwesomeLoader3,
+                ));
+              }
+              AppUser _user = snapshot.data;
+              return Form(
+                key: _formKey,
+                child: SingleChildScrollView(
+                  //key: _scrollKey,
+                  physics: BouncingScrollPhysics(),
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
+                      children: <Widget>[
+                        Stack(
+                          children: <Widget>[
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(context,
+                                    MaterialPageRoute(builder: (context) {
+                                  return PhotoViewScreen(
+                                    image: profileImage,
+                                    // imageUrl: "",
+                                    // user: widget.user,
+                                  );
+                                }));
+                              },
+                              child: Hero(
+                                transitionOnUserGestures: true,
+                                tag: "img",
+                                child: Container(
+                                  height: width - 100,
+                                  width: width - 100,
+                                  decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                          image: _getImage(),
+                                          fit: BoxFit.cover),
+                                      borderRadius: BorderRadius.circular(20)),
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                                top: width / 2,
+                                right: width / 2 - 65,
+                                child: Container(
+                                  // width: 40,
+                                  // height: 40,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      //  color: Colors.black,
+                                      gradient: LinearGradient(colors: [
+                                        primaryColor,
+                                        Colors.white
+                                      ])),
+
+                                  child: IconButton(
+                                    color: Colors.white,
+                                    icon: Icon(Icons.camera_enhance),
+                                    onPressed: () {
+                                      // PermissionHandler.checkIfPermitted(
+                                      //     _hangleImage, context, Permission.storage);
+                                    },
+                                    iconSize: 30,
+                                  ),
+                                )),
+                          ],
+                        ),
+                        SizedBox(height: 10),
+                        TextFormField(
+                          initialValue: _user.name,
+                          maxLength: 50,
+                          onFieldSubmitted: (String val) {
+                            name = val;
+                          },
+                          validator: (String val) {
+                            if (val.trim().length < 3) {
+                              return "name too short";
+                            } else if (!nameRegex.hasMatch(val)) {
+                              return "invalid name";
+                            }
+                            name = val.trim();
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                            contentPadding: EdgeInsets.all(10),
+                            hintText: "name",
+                            icon: Icon(Icons.person),
                           ),
                         ),
-                      ),
-                      Positioned(
-                          top: width / 2,
-                          right: width / 2 - 65,
-                          child: Container(
-                            // width: 40,
-                            // height: 40,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                //  color: Colors.black,
-                                gradient: LinearGradient(
-                                    colors: [primaryColor, Colors.white])),
-
-                            child: IconButton(
-                              color: Colors.white,
-                              icon: Icon(Icons.camera_enhance),
-                              onPressed: () {
-                                // PermissionHandler.checkIfPermitted(
-                                //     _hangleImage, context, Permission.storage);
-                              },
-                              iconSize: 30,
-                            ),
-                          )),
-                    ],
-                  ),
-                  SizedBox(height: 10),
-                  TextFormField(
-                    // initialValue: widget.user.name,
-
-                    maxLength: 50,
-                    onFieldSubmitted: (String val) {
-                      name = val;
-                    },
-                    validator: (String val) {
-                      if (val.trim().length < 3) {
-                        return "name too short";
-                      } else if (!val.contains(new RegExp(r"[a-zA-Z]"))) {
-                        return "invalid name";
-                      }
-                      return null;
-                    },
-                    decoration: InputDecoration(
-                      contentPadding: EdgeInsets.all(10),
-                      hintText: "name",
-                      icon: Icon(Icons.person),
-                    ),
-                    onSaved: (String val) {
-                      name = val.trim();
-                    },
-                  ),
-                  SizedBox(height: 10),
-                  TextFormField(
-                    // initialValue: widget.user.name ?? "",
-                    //keyboardType: Ke,
-                    maxLines: null,
-                    maxLength: 12,
-                    decoration: InputDecoration(
-                      icon: Icon(Icons.school),
-                      hintText: "matric No",
-                      contentPadding: EdgeInsets.all(10),
-                    ),
-                    onSaved: (String newBio) {
-                      bio = newBio.trim();
-                      print(bio);
-                    },
-                  ),
-                  SizedBox(height: 10),
-                  TextFormField(
-                    // initialValue: widget.user.name ?? "",
-                    //keyboardType: Ke,
-                    maxLines: null,
-              
-                    decoration: InputDecoration(
-                      icon: Icon(Icons.stairs),
-                      hintText: "Faculty",
-                      contentPadding: EdgeInsets.all(10),
-                    ),
-                    onSaved: (String newBio) {
-                      bio = newBio.trim();
-                      print(bio);
-                    },
-                  ),
-                  SizedBox(height: 10),
-                  TextFormField(
-                    // initialValue: widget.user.name ?? "",
-                    //keyboardType: Ke,
-                    maxLines: null,
-
-                    decoration: InputDecoration(
-                      icon: Icon(Icons.class_),
-                      hintText: "Department",
-                      contentPadding: EdgeInsets.all(10),
-                    ),
-                    onSaved: (String newBio) {
-                      bio = newBio.trim();
-                      print(bio);
-                    },
-                  ),
-                  SizedBox(height: 10),
-                  TextFormField(
-                    enabled: false,
-                    // initialValue: widget.user.email,
-                    //keyboardType: Ke,
-                    maxLines: null,
-                    decoration: InputDecoration(
-                      contentPadding: EdgeInsets.all(10),
-                      icon: Icon(Icons.email),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      _openGenderSheet(isDark);
-                    },
-                    child: AbsorbPointer(
-                      child: TextFormField(
-                        controller: _genderController,
-                        decoration: InputDecoration(
-                            hintText: "gender",
-                            contentPadding:
-                                EdgeInsets.symmetric(horizontal: 10),
-                            icon: Icon(Icons.person_pin)),
-                      ),
-                    ),
-                  ),
-
-                  SizedBox(height: 10),
-                  // GestureDetector(
-                  //     onTap: () {
-                  //       DatePicker.showDatePicker(
-                  //         context,
-                  //         pickerTheme: DateTimePickerTheme.Default,
-                  //         onConfirm: (date, _) {
-                  //           var fmtdate = DateFormat.yMMMMd("en_us").format(date);
-                  //           _dateController.text = "$fmtdate";
-                  //           _birthday = Timestamp.fromDate(date);
-                  //         },
-                  //         minDateTime: DateTime(
-                  //           1920,
-                  //           1,
-                  //           1,
-                  //           0,
-                  //         ),
-                  //         maxDateTime: DateTime(2020, 1, 1, 0),
-                  //       );
-                  //     },
-                  //     child: AbsorbPointer(
-                  //         child: TextFormField(
-                  //       controller: _dateController,
-                  //       decoration: InputDecoration(
-                  //         contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                  //         hintText: "Birthday",
-                  //         icon: Icon(Icons.date_range),
-                  //       ),
-                  //     ))),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  TextFormField(
-                    // controller: _locationController,
-                    //initialValue: widget.user.location ?? "",
-                    keyboardType: TextInputType.url,
-                    maxLines: null,
-                    maxLength: 100,
-
-                    decoration: InputDecoration(
-                      hintText: "hostel",
-                      counterText: "",
-                      contentPadding: EdgeInsets.all(10),
-                      icon: Icon(Icons.house_outlined),
-                    ),
-                    onSaved: (String newLocation) {
-                      // location = newLocation;
-                    },
-                  ),
-                  SizedBox(height: 20),
-
-                  // InternationalPhoneNumberInput(
-                  //     ignoreBlank: true,
-                  //     initialCountry2LetterCode: widget.user.countryIso ?? "NG",
-                  //     textFieldController: _phoneNumberController,
-                  //     autoValidate: true,
-                  //     countries: countryIso,
-                  //     onInputChanged: _onInputChanged),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Container(
-                    width: 120,
-                    height: 45,
-                    child: RaisedButton(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+                        SizedBox(height: 10),
+                        TextFormField(
+                          initialValue: _user.matricNumber,
+                          // initialValue: widget.user.name ?? "",
+                          //keyboardType: Ke,
+                          maxLines: null,
+                          validator: (input) {
+                            String val = input.replaceAll(" ", "");
+                            if (val.length < 9) {
+                              return "invalid";
+                            }
+                            matricNo = val;
+                            return null;
+                          },
+                          maxLength: 12,
+                          decoration: InputDecoration(
+                            icon: Icon(Icons.school),
+                            hintText: "matric No",
+                            contentPadding: EdgeInsets.all(10),
+                          ),
                         ),
-                        color: primaryColor,
-                        // disabledColor: Colors.teal,
-                        child: !isLoading
-                            ? AnimatedSwitcher(
-                                duration: Duration(milliseconds: 160),
-                                child: Text(
-                                  "Submit",
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w700),
-                                ))
-                            : CircularProgressIndicator(
-                                backgroundColor: Colors.teal,
+                        SizedBox(height: 10),
+                        TextFormField(
+                          // initialValue: widget.user.name ?? "",
+                          //keyboardType: Ke,
+                          initialValue: _user.faculty,
+                          maxLines: null,
+                          validator: (input) {
+                            if (input.isEmpty) {
+                              return "invalid";
+                            }
+                            matricNo = input;
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                            icon: Icon(Icons.stairs),
+                            hintText: "Faculty",
+                            contentPadding: EdgeInsets.all(10),
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        TextFormField(
+                          initialValue: _user.department,
+                          // initialValue: widget.user.name ?? "",
+                          //keyboardType: Ke,
+                          maxLines: null,
+                          validator: (input) {
+                            if (input.isEmpty) {
+                              return "invalid";
+                            }
+                            dept = input;
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                            icon: Icon(Icons.class_),
+                            hintText: "Department",
+                            contentPadding: EdgeInsets.all(10),
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        TextFormField(
+                          enabled: false,
+                          initialValue: _user.email,
+                          //keyboardType: Ke,
+                          maxLines: null,
+
+                          decoration: InputDecoration(
+                            contentPadding: EdgeInsets.all(10),
+                            icon: Icon(Icons.email),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            _openGenderSheet(isDark);
+                          },
+                          child: AbsorbPointer(
+                            child: TextFormField(
+                              initialValue: _user.gender,
+                              // controller: _genderController,
+                              decoration: InputDecoration(
+                                  hintText: "gender",
+                                  contentPadding:
+                                      EdgeInsets.symmetric(horizontal: 10),
+                                  icon: Icon(Icons.person_pin)),
+                            ),
+                          ),
+                        ),
+
+                        SizedBox(height: 10),
+                        // GestureDetector(
+                        //     onTap: () {
+                        //       DatePicker.showDatePicker(
+                        //         context,
+                        //         pickerTheme: DateTimePickerTheme.Default,
+                        //         onConfirm: (date, _) {
+                        //           var fmtdate = DateFormat.yMMMMd("en_us").format(date);
+                        //           _dateController.text = "$fmtdate";
+                        //           _birthday = Timestamp.fromDate(date);
+                        //         },
+                        //         minDateTime: DateTime(
+                        //           1920,
+                        //           1,
+                        //           1,
+                        //           0,
+                        //         ),
+                        //         maxDateTime: DateTime(2020, 1, 1, 0),
+                        //       );
+                        //     },
+                        //     child: AbsorbPointer(
+                        //         child: TextFormField(
+                        //       controller: _dateController,
+                        //       decoration: InputDecoration(
+                        //         contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                        //         hintText: "Birthday",
+                        //         icon: Icon(Icons.date_range),
+                        //       ),
+                        //     ))),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        TextFormField(
+                          // controller: _locationController,
+                          //initialValue: widget.user.location ?? "",
+                          keyboardType: TextInputType.url,
+                          maxLines: null,
+                          maxLength: 100,
+                          validator: (input) {
+                            if (input.isEmpty) {
+                              return "invalid";
+                            }
+                            // hostel = input;
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                            hintText: "hostel",
+                            counterText: "",
+                            contentPadding: EdgeInsets.all(10),
+                            icon: Icon(Icons.house_outlined),
+                          ),
+                          onSaved: (String newLocation) {
+                            // location = newLocation;
+                          },
+                        ),
+                        SizedBox(height: 20),
+
+                        // InternationalPhoneNumberInput(
+                        //     ignoreBlank: true,
+                        //     initialCountry2LetterCode: widget.user.countryIso ?? "NG",
+                        //     textFieldController: _phoneNumberController,
+                        //     autoValidate: true,
+                        //     countries: countryIso,
+                        //     onInputChanged: _onInputChanged),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Container(
+                          width: 120,
+                          height: 45,
+                          child: RaisedButton(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
                               ),
-                        onPressed: !isLoading ? _submit : null),
-                  )
-                ],
-              ),
-            ),
-          ),
-        ),
+                              color: primaryColor,
+                              // disabledColor: Colors.teal,
+                              child: !isLoading
+                                  ? AnimatedSwitcher(
+                                      duration: Duration(milliseconds: 160),
+                                      child: Text(
+                                        "Submit",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w700),
+                                      ))
+                                  : CircularProgressIndicator(
+                                      backgroundColor: Colors.teal,
+                                    ),
+                              onPressed: !isLoading ? _submit : null),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            }),
       ),
     );
   }
