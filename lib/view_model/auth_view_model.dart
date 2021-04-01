@@ -27,7 +27,7 @@ class AuthService extends ChangeNotifier {
       User user = userCredential.user;
       AppUser _user = AppUser(
           email: user.email,
-          dateRegistered: Timestamp.now(),
+          dateRegistered: Timestamp.now().toString(),
           imageUrl: "",
           userType: "Student",
           uuid: user.uid);

@@ -36,11 +36,14 @@ import 'package:flutter/services.dart';
 // import 'package:flutter_cupertino_date_picker/flutter_cupertino_date_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:project/database/database_service.dart';
 import 'package:project/database/storage_service.dart';
 import 'package:project/model/user_model.dart';
+import 'package:project/permisssion_utils.dart';
 import 'package:project/ui/photo_view_screen.dart';
 import 'package:project/ui/utils/color_utils.dart';
+import 'package:project/ui/utils/flush_bar_utils.dart';
 import 'package:project/ui/utils/log_utils.dart';
 import 'package:provider/provider.dart';
 
@@ -63,12 +66,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   String matricNo;
   String faculty;
   String dept;
-  String name = "";
+  String hostel;
+  String name;
 
   bool isLocationTapped = false;
   final nameRegex = new RegExp(r"[a-zA-Z \s]");
   final _formKey = GlobalKey<FormState>();
-  TextEditingController hostel = TextEditingController();
+  // TextEditingController hostel = TextEditingController();
 
   TextEditingController _genderController;
   // TextEditingController _dateController;
@@ -94,23 +98,23 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   // to determine what type of image to  when image is tapped
   ImageProvider _getImage() {
     if (profileImage == null) {
-      if (widget?.user?.imageUrl?.isEmpty ?? true) {
+      if (_user.imageUrl.isEmpty ?? false) {
         return AssetImage("assets/images/profile_pic.png");
       }
-      return CachedNetworkImageProvider(widget.user.imageUrl);
+      return CachedNetworkImageProvider(_user.imageUrl);
     } else {
       return FileImage(profileImage);
     }
   }
 
   // on phone number field changed
-
+  AppUser _user;
   TextEditingController countryController;
-
+  String uuid;
   @override
   void initState() {
     // initializeDateFormatting('en_US,', null);
-
+    uuid = Provider.of<AppUser>(context, listen: false).uuid;
     gender = widget.user.gender;
     // _dateController = TextEditingController(
     //     text: _birthday == null
@@ -142,7 +146,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Widget build(BuildContext context) {
     bool isDark = Theme.of(context).brightness == Brightness.dark;
     // prd = ProgressDialog(context, isDismissible: true);
-    final uuid = Provider.of<AppUser>(context).uuid;
+
     // prd.style(message: "Submitting...");
     //  final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
@@ -170,7 +174,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   loaderType: AwesomeLoader.AwesomeLoader3,
                 ));
               }
-              AppUser _user = snapshot.data;
+              _user = snapshot.data;
               return Form(
                 key: _formKey,
                 child: SingleChildScrollView(
@@ -188,7 +192,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                     MaterialPageRoute(builder: (context) {
                                   return PhotoViewScreen(
                                     image: profileImage,
-                                    // imageUrl: "",
+                                    imageUrl: _user.imageUrl,
                                     // user: widget.user,
                                   );
                                 }));
@@ -225,8 +229,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                     color: Colors.white,
                                     icon: Icon(Icons.camera_enhance),
                                     onPressed: () {
-                                      // PermissionHandler.checkIfPermitted(
-                                      //     _hangleImage, context, Permission.storage);
+                                      logger.d("pressed");
+                                      PermissionHandler.checkIfPermitted(
+                                          _hangleImage,
+                                          context,
+                                          Permission.photos);
                                     },
                                     iconSize: 30,
                                   ),
@@ -286,7 +293,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             if (input.isEmpty) {
                               return "invalid";
                             }
-                            matricNo = input;
+                            faculty = input;
                             return null;
                           },
                           decoration: InputDecoration(
@@ -379,16 +386,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           height: 10,
                         ),
                         TextFormField(
-                          // controller: _locationController,
-                          //initialValue: widget.user.location ?? "",
-                          keyboardType: TextInputType.url,
+                          initialValue: _user.hostel,
+                          keyboardType: TextInputType.name,
                           maxLines: null,
                           maxLength: 100,
                           validator: (input) {
                             if (input.isEmpty) {
                               return "invalid";
                             }
-                            // hostel = input;
+                            hostel = input;
                             return null;
                           },
                           decoration: InputDecoration(
@@ -433,8 +439,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                             fontWeight: FontWeight.w700),
                                       ))
                                   : CircularProgressIndicator(
-                                      backgroundColor: Colors.teal,
-                                    ),
+                                    valueColor: AlwaysStoppedAnimation(primaryColor),
+                                  ),
                               onPressed: !isLoading ? _submit : null),
                         )
                       ],
@@ -519,10 +525,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         String profileImageUrl = "";
 
         if (profileImage == null) {
-          profileImageUrl = widget.user.imageUrl;
+          profileImageUrl = _user.imageUrl;
         } else {
           profileImageUrl = await StorageService.uploadUserPicture(
-              widget.user.imageUrl, profileImage);
+              widget.user.imageUrl ?? "", profileImage);
         }
 
         //determine if theres is
@@ -535,19 +541,25 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         //   _canApply = false;
         // }
 
-        AppUser user = AppUser(
-            // isFreelance: isFreelance,
-
-            );
+        AppUser user = _user.copyWith(
+            uuid: uuid,
+            department: dept,
+            name: name,
+            faculty: faculty,
+            matricNumber: matricNo,
+            imageUrl: profileImageUrl,
+            // dateRegistered: _user.dateRegistered,
+            hostel: hostel,
+            gender: gender);
 
         //decide if there is any update to userprofile;
         // if (widget.user == user && pdf == null && profileImage == null) {
         //   user.lastUpdated = widget.user.lastUpdated;
         // } else {
         //   user.lastUpdated = Timestamp.now();
-        // }
+        // }ibr
 
-        DatabaseService.addUser(user);
+        await DatabaseService.addUser(user);
 
         setState(() {
           isLoading = false;
@@ -560,11 +572,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         });
         if (e is PlatformException) {
           if (e.toString().contains("ERROR_NETWORK_REQUEST_FAILED")) {
+            show_flushbar("Error occured check your internet connection")
+                .show(context);
             // SnackBarUtils.showSnackBar(
             //     _scaffoldKey, "Error occured, check your internet connection");
             return;
           }
+          show_flushbar("Error occured please try again").show(context);
         }
+        logger.d(e);
         // SnackBarUtils.showSnackBar(
         //     _scaffoldKey, "Unknow error occured,try submitting again");
         //show general error dialog

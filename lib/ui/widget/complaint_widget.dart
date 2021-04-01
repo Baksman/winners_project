@@ -28,9 +28,9 @@ class _ComplaintItemState extends State<ComplaintItem> {
               //     ? "assets/svg/message_close.svg"
               //     : "assets/svg/message_open.svg"),
               title: Text(
-            widget.complaint?.title,
+            widget.complaint.title.toUpperCase(),
             style:
-                TextStyle(fontSize: 13, color: Theme.of(context).primaryColor),
+                TextStyle(fontSize: 13,fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor),
           )),
           children: [
             Container(

@@ -1,0 +1,2 @@
+const PAYSTACK_API_KEY = "sk_test_b12bebbee9141961b45a0d02d0f56d623432659e";
+const PAYSTACK_PUBLIC_KEY = "pk_test_f82c6afd4a753e8cd39d2d06887d0b915feec807";

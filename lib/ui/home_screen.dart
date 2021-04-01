@@ -250,11 +250,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
                     return ListView.builder(
                       shrinkWrap: true,
-                      itemCount: snapshot.data.length,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: snapshot.data.length > 3 ? 3 : snapshot.data.length,
                       itemBuilder: (ctx, index) {
                         return Theme(
-                          data: ThemeData(primaryColor: primaryColor),
-                          child: ComplaintItem(complaint: snapshot.data[index]));
+                            data: ThemeData(primaryColor: primaryColor),
+                            child:
+                                ComplaintItem(complaint: snapshot.data[index]));
                       },
                     );
                   })

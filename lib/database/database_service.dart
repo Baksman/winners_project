@@ -47,11 +47,11 @@ class DatabaseService extends ChangeNotifier {
     QuerySnapshot qSnap = await firestore
         .collection("compliant")
         .doc(userId)
-        .collection("my_complaint")
+        .collection("my_complaint").orderBy("timeStamp",descending: true)
         .get();
     List<Complaint> complaints = [];
 
-    logger.d(qSnap.docs.last.get("hostel"));
+    // logger.d(qSnap.docs.last.get("hostel"));
     qSnap.docs.map((element) {
       logger.d(element.id);
       complaints.add(Complaint.fromMap(element.data()));
