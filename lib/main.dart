@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:project/database/database_service.dart';
 import 'package:project/model/user_model.dart';
 import 'package:project/paystack/paystack.dart';
+// import 'package:project/paystack/paystack.dart';
 // import 'package:kt_drawer_menu/kt_drawer_menu.dart';
 import 'package:project/ui/home_screen.dart';
 import 'package:project/ui/login/login_screen.dart';
@@ -63,7 +64,7 @@ class MainWidget extends StatelessWidget {
             // check if user has already logged in and verified there email
             return (user == null || !user.emailVerified)
                 ? LoginScreen()
-                : HomePage();
+                : Home();
           },
         ),
       ),

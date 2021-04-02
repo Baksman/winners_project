@@ -39,6 +39,7 @@ import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:project/database/database_service.dart';
 import 'package:project/database/storage_service.dart';
+import 'package:project/hostels.dart';
 import 'package:project/model/user_model.dart';
 import 'package:project/permisssion_utils.dart';
 import 'package:project/ui/photo_view_screen.dart';
@@ -110,6 +111,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   // on phone number field changed
   AppUser _user;
   TextEditingController countryController;
+  TextEditingController _hostelController;
   String uuid;
   @override
   void initState() {
@@ -385,28 +387,97 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         SizedBox(
                           height: 10,
                         ),
-                        TextFormField(
-                          initialValue: _user.hostel,
-                          keyboardType: TextInputType.name,
-                          maxLines: null,
-                          maxLength: 100,
-                          validator: (input) {
-                            if (input.isEmpty) {
-                              return "invalid";
-                            }
-                            hostel = input;
-                            return null;
-                          },
-                          decoration: InputDecoration(
-                            hintText: "hostel",
-                            counterText: "",
-                            contentPadding: EdgeInsets.all(10),
-                            icon: Icon(Icons.house_outlined),
-                          ),
-                          onSaved: (String newLocation) {
-                            // location = newLocation;
-                          },
-                        ),
+                        GestureDetector(
+                    onTap: () {
+                      showCupertinoModalPopup(
+                          context: context,
+                          builder: (BuildContext context) =>
+                              CupertinoActionSheet(
+                                title: const Text('Choose your hostel'),
+                                // message: const Text('Your options are '),
+                                actions: hostels
+                                    .map((e) => CupertinoActionSheetAction(
+                                          child: Text(e),
+                                          onPressed: () {
+                                            _hostelController.text = e;
+                                            Navigator.pop(context, 'One');
+                                          },
+                                        ))
+                                    .toList(),
+                                // <Widget>[
+                                //   CupertinoActionSheetAction(
+                                //     child: const Text('One'),
+                                //     onPressed: () {
+                                //       Navigator.pop(context, 'One');
+                                //     },
+                                //   ),
+                                //   CupertinoActionSheetAction(
+                                //     child: const Text('Two'),
+                                //     onPressed: () {
+                                //       Navigator.pop(context, 'Two');
+                                //     },
+                                //   )
+                                // ],
+                                cancelButton: CupertinoActionSheetAction(
+                                  child: const Text(
+                                    'Cancel',
+                                    style: TextStyle(color: Colors.red),
+                                  ),
+                                  isDefaultAction: true,
+                                  onPressed: () {
+                                    Navigator.pop(context, 'Cancel');
+                                  },
+                                ),
+                              ));
+                    },
+                    child: AbsorbPointer(
+                      child: TextFormField(
+                        // maxLength: 30,Î
+                        controller: _hostelController,
+                        validator: (val) {
+                          String validatedInput =
+                              val.replaceAll(" ", "").trim();
+                          if (validatedInput.isEmpty) {
+                            return "required";
+                          }
+                          hostel = val;
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                            labelText: "hostel",
+                            contentPadding:
+                                EdgeInsets.symmetric(horizontal: 20),
+                            border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0)),
+                                borderSide: BorderSide(
+                                  color: Colors.transparent,
+                                ))),
+                      ),
+                    ),
+                  ),
+                        // TextFormField(
+                        //   initialValue: _user.hostel,
+                        //   keyboardType: TextInputType.name,
+                        //   maxLines: null,
+                        //   maxLength: 100,
+                        //   validator: (input) {
+                        //     if (input.isEmpty) {
+                        //       return "invalid";
+                        //     }
+                        //     hostel = input;
+                        //     return null;
+                        //   },
+                        //   decoration: InputDecoration(
+                        //     hintText: "hostel",
+                        //     counterText: "",
+                        //     contentPadding: EdgeInsets.all(10),
+                        //     icon: Icon(Icons.house_outlined),
+                        //   ),
+                        //   onSaved: (String newLocation) {
+                        //     // location = newLocation;
+                        //   },
+                        // ),
                         SizedBox(height: 20),
 
                         // InternationalPhoneNumberInput(

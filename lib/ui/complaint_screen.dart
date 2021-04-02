@@ -206,7 +206,7 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 child: Row(children: [
                   Expanded(
-                    child: RaisedButton(
+                       child: RaisedButton(
                       padding: EdgeInsets.symmetric(vertical: 12),
                       color: primaryColor,
                       onPressed: dbProvider.isLoading
