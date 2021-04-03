@@ -4,12 +4,15 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:awesome_loader/awesome_loader.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_paystack/flutter_paystack.dart';
 import 'package:kt_drawer_menu/kt_drawer_menu.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:project/database/database_service.dart';
 import 'package:project/database/local_storage.dart';
 import 'package:project/model/complaint_model.dart';
 import 'package:project/model/user_model.dart';
+import 'package:project/paystack/api_key.dart';
+import 'package:project/paystack/paystack_interface.dart';
 import 'package:project/ui/all_complaint_screen.dart';
 import 'package:project/ui/complaint_screen.dart';
 import 'package:project/ui/utils/color_utils.dart';
@@ -66,7 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     _streamController = StreamController.broadcast();
-    // TODO: implement initState
+
     super.initState();
   }
 
@@ -188,12 +191,22 @@ class _HomeScreenState extends State<HomeScreen> {
                 1.5,
                 GestureDetector(
                   // AllComplaintScreen
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        PageTransition(
-                            type: PageTransitionType.rightToLeft,
-                            child: AllComplaintScreen()));
+                  onTap: () async {
+                    // print("pressed");
+                    await PayStackInterface(
+                            amount: 10000,
+                            cardNumber: "29993993993",
+                            cvv: "123",
+                            expiryYear: 12,
+                            expiryMonth: 22,
+                            userID: "bakjsanan",
+                            email: "asjs@djdj.com")
+                        .processPayment(context);
+                    // Navigator.push(
+                    //     context,
+                    //     PageTransition(
+                    //         type: PageTransitionType.rightToLeft,
+                    //         child: AllComplaintScreen()));
                   },
                   child: Card(
                     shape: RoundedRectangleBorder(
@@ -251,7 +264,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     return ListView.builder(
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
-                      itemCount: snapshot.data.length > 3 ? 3 : snapshot.data.length,
+                      itemCount:
+                          snapshot.data.length > 3 ? 3 : snapshot.data.length,
                       itemBuilder: (ctx, index) {
                         return Theme(
                             data: ThemeData(primaryColor: primaryColor),

@@ -112,12 +112,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   AppUser _user;
   TextEditingController countryController;
   TextEditingController _hostelController;
+  // TextEditingController _genderController = TextEditingController();
   String uuid;
   @override
   void initState() {
     // initializeDateFormatting('en_US,', null);
     uuid = Provider.of<AppUser>(context, listen: false).uuid;
     gender = widget.user.gender;
+    _hostelController = TextEditingController();
     // _dateController = TextEditingController(
     //     text: _birthday == null
     //         ? ""
@@ -177,6 +179,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 ));
               }
               _user = snapshot.data;
+              _hostelController.text = _user.hostel;
+              _genderController.text = _user.gender;
               return Form(
                 key: _formKey,
                 child: SingleChildScrollView(
@@ -262,6 +266,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             contentPadding: EdgeInsets.all(10),
                             hintText: "name",
                             icon: Icon(Icons.person),
+                              counterText: "",
                           ),
                         ),
                         SizedBox(height: 10),
@@ -282,6 +287,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           decoration: InputDecoration(
                             icon: Icon(Icons.school),
                             hintText: "matric No",
+                            counterText: "",
                             contentPadding: EdgeInsets.all(10),
                           ),
                         ),
@@ -290,7 +296,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           // initialValue: widget.user.name ?? "",
                           //keyboardType: Ke,
                           initialValue: _user.faculty,
-                          maxLines: null,
+
                           validator: (input) {
                             if (input.isEmpty) {
                               return "invalid";
@@ -301,7 +307,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           decoration: InputDecoration(
                             icon: Icon(Icons.stairs),
                             hintText: "Faculty",
-                            contentPadding: EdgeInsets.all(10),
+                          contentPadding: EdgeInsets.all(10),
                           ),
                         ),
                         SizedBox(height: 10),
@@ -320,7 +326,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           decoration: InputDecoration(
                             icon: Icon(Icons.class_),
                             hintText: "Department",
-                            contentPadding: EdgeInsets.all(10),
+                             contentPadding: EdgeInsets.all(10),
                           ),
                         ),
                         SizedBox(height: 10),
@@ -344,8 +350,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           },
                           child: AbsorbPointer(
                             child: TextFormField(
-                              initialValue: _user.gender,
-                              // controller: _genderController,
+                              // initialValue: _user.gender,
+                              controller: _genderController,
+
                               decoration: InputDecoration(
                                   hintText: "gender",
                                   contentPadding:
@@ -388,74 +395,75 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           height: 10,
                         ),
                         GestureDetector(
-                    onTap: () {
-                      showCupertinoModalPopup(
-                          context: context,
-                          builder: (BuildContext context) =>
-                              CupertinoActionSheet(
-                                title: const Text('Choose your hostel'),
-                                // message: const Text('Your options are '),
-                                actions: hostels
-                                    .map((e) => CupertinoActionSheetAction(
-                                          child: Text(e),
-                                          onPressed: () {
-                                            _hostelController.text = e;
-                                            Navigator.pop(context, 'One');
-                                          },
-                                        ))
-                                    .toList(),
-                                // <Widget>[
-                                //   CupertinoActionSheetAction(
-                                //     child: const Text('One'),
-                                //     onPressed: () {
-                                //       Navigator.pop(context, 'One');
-                                //     },
-                                //   ),
-                                //   CupertinoActionSheetAction(
-                                //     child: const Text('Two'),
-                                //     onPressed: () {
-                                //       Navigator.pop(context, 'Two');
-                                //     },
-                                //   )
-                                // ],
-                                cancelButton: CupertinoActionSheetAction(
-                                  child: const Text(
-                                    'Cancel',
-                                    style: TextStyle(color: Colors.red),
-                                  ),
-                                  isDefaultAction: true,
-                                  onPressed: () {
-                                    Navigator.pop(context, 'Cancel');
-                                  },
-                                ),
-                              ));
-                    },
-                    child: AbsorbPointer(
-                      child: TextFormField(
-                        // maxLength: 30,Î
-                        controller: _hostelController,
-                        validator: (val) {
-                          String validatedInput =
-                              val.replaceAll(" ", "").trim();
-                          if (validatedInput.isEmpty) {
-                            return "required";
-                          }
-                          hostel = val;
-                          return null;
-                        },
-                        decoration: InputDecoration(
-                            labelText: "hostel",
-                            contentPadding:
-                                EdgeInsets.symmetric(horizontal: 20),
-                            border: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10.0)),
-                                borderSide: BorderSide(
-                                  color: Colors.transparent,
-                                ))),
-                      ),
-                    ),
-                  ),
+                          onTap: () {
+                            showCupertinoModalPopup(
+                                context: context,
+                                builder: (BuildContext context) =>
+                                    CupertinoActionSheet(
+                                      title: const Text('Choose your hostel'),
+                                      // message: const Text('Your options are '),
+                                      actions: hostels
+                                          .map(
+                                              (e) => CupertinoActionSheetAction(
+                                                    child: Text(
+                                                      e,
+                                                      style: TextStyle(
+                                                          color: Colors.black),
+                                                    ),
+                                                    onPressed: () {
+                                                      _hostelController.text =
+                                                          e;
+                                                      Navigator.pop(context);
+                                                    },
+                                                  ))
+                                          .toList(),
+                                      // <Widget>[
+                                      //   CupertinoActionSheetAction(
+                                      //     child: const Text('One'),
+                                      //     onPressed: () {
+                                      //       Navigator.pop(context, 'One');
+                                      //     },
+                                      //   ),
+                                      //   CupertinoActionSheetAction(
+                                      //     child: const Text('Two'),
+                                      //     onPressed: () {
+                                      //       Navigator.pop(context, 'Two');
+                                      //     },
+                                      //   )
+                                      // ],
+                                      cancelButton: CupertinoActionSheetAction(
+                                        child: const Text(
+                                          'Cancel',
+                                          style: TextStyle(color: Colors.red),
+                                        ),
+                                        isDefaultAction: true,
+                                        onPressed: () {
+                                          Navigator.pop(context, 'Cancel');
+                                        },
+                                      ),
+                                    ));
+                          },
+                          child: AbsorbPointer(
+                            child: TextFormField(
+                              // maxLength: 30,Î
+                              controller: _hostelController,
+                              validator: (val) {
+                                String validatedInput =
+                                    val.replaceAll(" ", "").trim();
+                                if (validatedInput.isEmpty) {
+                                  return "required";
+                                }
+                                hostel = val;
+                                return null;
+                              },
+                              decoration: InputDecoration(
+                                labelText: "hostel",
+                                icon: Icon(Icons.house_outlined),
+                                 contentPadding: EdgeInsets.all(10),
+                              ),
+                            ),
+                          ),
+                        ),
                         // TextFormField(
                         //   initialValue: _user.hostel,
                         //   keyboardType: TextInputType.name,
@@ -510,8 +518,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                             fontWeight: FontWeight.w700),
                                       ))
                                   : CircularProgressIndicator(
-                                    valueColor: AlwaysStoppedAnimation(primaryColor),
-                                  ),
+                                      valueColor:
+                                          AlwaysStoppedAnimation(primaryColor),
+                                    ),
                               onPressed: !isLoading ? _submit : null),
                         )
                       ],

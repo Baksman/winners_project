@@ -2,8 +2,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_paystack/flutter_paystack.dart';
 import 'package:project/database/database_service.dart';
+import 'package:project/message_screen/chat_list_screen.dart';
 import 'package:project/model/user_model.dart';
+import 'package:project/paystack/api_key.dart';
 import 'package:project/paystack/paystack.dart';
 // import 'package:project/paystack/paystack.dart';
 // import 'package:kt_drawer_menu/kt_drawer_menu.dart';
@@ -20,7 +23,21 @@ void main() async {
   runApp(MainWidget());
 }
 
-class MainWidget extends StatelessWidget {
+class MainWidget extends StatefulWidget {
+  @override
+  _MainWidgetState createState() => _MainWidgetState();
+}
+
+class _MainWidgetState extends State<MainWidget> {
+  @override
+  void initState() {
+    PaystackPlugin.initialize(
+      publicKey: PAYSTACK_PUBLIC_KEY,
+    );
+    // TODO: implement initState
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     //onAuthChange()
@@ -36,9 +53,8 @@ class MainWidget extends StatelessWidget {
         title: "Winner 💜",
         theme: ThemeData(
           primaryColor: Colors.purple,
-        
         ),
-      debugShowCheckedModeBanner: false,
+        debugShowCheckedModeBanner: false,
         home: StreamBuilder<User>(
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (ctx, snapshot) {
@@ -64,7 +80,10 @@ class MainWidget extends StatelessWidget {
             // check if user has already logged in and verified there email
             return (user == null || !user.emailVerified)
                 ? LoginScreen()
-                : Home();
+                : HomeScreen();
+            // : ChatHome(
+            //     currentUserId: user.uid,
+            //   );
           },
         ),
       ),

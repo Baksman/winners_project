@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_paystack/flutter_paystack.dart';
+import 'package:project/paystack/api_key.dart';
+import 'package:project/ui/utils/log_utils.dart';
 
 class PayStackInterface extends ChangeNotifier {
   final int amount;
@@ -15,7 +17,7 @@ class PayStackInterface extends ChangeNotifier {
   final String cardNumber;
 
   final String email;
-
+  final String userID;
   String responseMessage;
   bool _isLoading = false;
 
@@ -25,15 +27,21 @@ class PayStackInterface extends ChangeNotifier {
       {Key key,
       @required this.amount,
       @required this.cvv,
+      @required this.userID,
       @required this.email,
       @required this.expiryMonth,
       @required this.expiryYear,
       @required this.cardNumber});
 
+  // void initalisePayStack() {
+
+  // }
   Future<bool> processPayment(BuildContext context) async {
     Charge charge = Charge()
       ..amount = amount // In base currency
-      ..email = 'customer@email.com'
+      ..email = email
+      
+      ..accessCode = userID
       ..card = _getCardFromUI();
     _isLoading = true;
     notifyListeners();
@@ -41,6 +49,7 @@ class PayStackInterface extends ChangeNotifier {
       CheckoutResponse response = await PaystackPlugin.checkout(
         context,
         // for card only;
+
         method: CheckoutMethod.card,
         charge: charge,
         fullscreen: false,
@@ -51,7 +60,7 @@ class PayStackInterface extends ChangeNotifier {
       return response.status;
     } catch (e) {
       _isLoading = false;
-
+      logger.d(e);
       notifyListeners();
       return false;
     }

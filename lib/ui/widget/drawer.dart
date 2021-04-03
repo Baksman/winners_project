@@ -1,4 +1,5 @@
 import 'package:awesome_loader/awesome_loader.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:project/database/database_service.dart';
 import 'package:project/database/local_storage.dart';
@@ -10,10 +11,16 @@ import 'package:project/ui/utils/log_utils.dart';
 import 'package:project/ui/widget/logout_dialog.dart';
 import 'package:provider/provider.dart';
 
-class DrawerWidget extends StatelessWidget {
+class DrawerWidget extends StatefulWidget {
+  @override
+  _DrawerWidgetState createState() => _DrawerWidgetState();
+}
+
+class _DrawerWidgetState extends State<DrawerWidget> {
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<AppUser>(context);
+    final appUser = Provider.of<AppUser>(context);
+
     return Container(
       color: primaryColor,
       // width: 200,
@@ -24,9 +31,8 @@ class DrawerWidget extends StatelessWidget {
             Spacer(),
             Align(
               alignment: Alignment.centerLeft,
-              child: FutureBuilder<List<String>>(
-                  future: Future.wait(
-                      [LocalStorage.getImageUrl(), LocalStorage.getMatricNo()]),
+              child: FutureBuilder<AppUser>(
+                  future: DatabaseService.getUserData(appUser.uuid),
                   builder: (context, snapshot) {
                     // if (snapshot.hasError) {
                     //   logger.d(snapshot.error);
@@ -37,7 +43,7 @@ class DrawerWidget extends StatelessWidget {
                         child: AwesomeLoader(
                           color: Colors.white,
                           loaderType: AwesomeLoader.AwesomeLoader3,
-                        ), 
+                        ),
                       );
                     }
 
@@ -46,13 +52,14 @@ class DrawerWidget extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         GestureDetector(
-                            onTap: () {
-                              Navigator.push(context,
+                            onTap: ()async {
+                          await    Navigator.push(context,
                                   MaterialPageRoute(builder: (ctx) {
                                 return PhotoViewScreen(
-                                  imageUrl: snapshot.data[0],
+                                  imageUrl: snapshot.data.imageUrl,
                                 );
                               }));
+                              setState(() {});
                             },
                             child: Hero(
                               tag: "img",
@@ -67,20 +74,29 @@ class DrawerWidget extends StatelessWidget {
                                         color: Colors.white, width: 3),
                                     shape: BoxShape.circle,
                                     image: DecorationImage(
-                                        image: AssetImage(
-                                            "assets/images/profile_pic.png"))),
+                                        fit: BoxFit.cover,
+                                        image: snapshot.data.imageUrl.isEmpty
+                                            ? AssetImage(
+                                                "assets/images/profile_pic.png")
+                                            : CachedNetworkImageProvider(
+                                                snapshot.data.imageUrl))),
                               ),
                             )),
                         SizedBox(
                           height: 10,
                         ),
-                        Text(snapshot.data[1])
+                        Transform.translate(
+                            offset: Offset(10, 0),
+                            child: Text(
+                              snapshot.data.matricNumber,
+                              style: TextStyle(color: Colors.white),
+                            ))
                       ],
                     );
                   }),
             ),
-            _buildItem(context, "Profile", Icons.person, () {
-              Navigator.push(
+            _buildItem(context, "Profile", Icons.person, () async {
+              await Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (ctx) => EditProfileScreen(AppUser())));
