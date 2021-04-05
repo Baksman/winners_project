@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_paystack/flutter_paystack.dart';
 import 'package:kt_drawer_menu/kt_drawer_menu.dart';
+import 'package:marquee/marquee.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:project/database/database_service.dart';
 import 'package:project/database/local_storage.dart';
@@ -103,47 +104,77 @@ class _HomeScreenState extends State<HomeScreen> {
               SizedBox(
                 height: 30,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Welcome",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold, color: Colors.grey),
-                  ),
-                  SizedBox(
-                    width: 5,
-                  ),
-                  FutureBuilder<Object>(
-                      future: LocalStorage.getUserName(),
-                      builder: (context, snapshot) {
-                        if (!snapshot.hasData)
-                          return AwesomeLoader(
-                            color: Colors.white,
-                            loaderType: AwesomeLoader.AwesomeLoader3,
-                          );
-                        return Center(
-                          child: Text(
-                            snapshot.data,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        );
-                      }),
-                ],
-              ),
+              FutureBuilder<AppUser>(
+                  future: DatabaseService.getUserData(uuid),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData)
+                      return Center(
+                        child: AwesomeLoader(
+                          color: primaryColor,
+                          loaderType: AwesomeLoader.AwesomeLoader3,
+                        ),
+                      );
+                    return RichText(
+                      text: TextSpan(
+                        text: 'Welcome ',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.grey),
+                        children: <TextSpan>[
+                          TextSpan(
+                              text: snapshot.data.name.toUpperCase()
+                                  ,
+                              style: TextStyle(fontWeight: FontWeight.bold)),
+                        ],
+                      ),
+                      textAlign: TextAlign.center,
+                    );
+                  }),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.center,
+              //   children: [
+              //     Text(
+              //       "Welcome",
+              //       style: TextStyle(
+              //           fontWeight: FontWeight.bold, color: Colors.grey),
+              //     ),
+              //     SizedBox(
+              //       width: 5,
+              //     ),
+              //     FutureBuilder<Object>(
+              //         future: LocalStorage.getUserName(),
+              //         builder: (context, snapshot) {
+              //           if (!snapshot.hasData)
+              //             return AwesomeLoader(
+              //               color: Colors.white,
+              //               loaderType: AwesomeLoader.AwesomeLoader3,
+              //             );
+              //           return Center(
+              //             child: Text(
+              //               snapshot.data,
+              //               style: TextStyle(
+              //                 fontWeight: FontWeight.bold,
+              //               ),
+              //             ),
+              //           );
+              //         }),
+              //   ],
+              // ),
               SizedBox(
                 height: 30,
               ),
               FadeAnimation(
                 1,
-                Text(
-                  "ABU HOSTEL CORRESPONDER",
-                  style: TextStyle(
-                      color: primaryColor,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold),
+                Container(
+                  height: 20,
+                  child: Marquee(
+                    text: "WELCOME TO ABU HOSTEL CORRESPONDER  ",
+                    blankSpace: 60.0,
+                    velocity: 20,
+                    style: TextStyle(
+                        color: primaryColor,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold),
+                  ),
                 ),
               ),
               SizedBox(height: height / 7),
@@ -193,20 +224,20 @@ class _HomeScreenState extends State<HomeScreen> {
                   // AllComplaintScreen
                   onTap: () async {
                     // print("pressed");
-                    await PayStackInterface(
-                            amount: 10000,
-                            cardNumber: "29993993993",
-                            cvv: "123",
-                            expiryYear: 12,
-                            expiryMonth: 22,
-                            userID: "bakjsanan",
-                            email: "asjs@djdj.com")
-                        .processPayment(context);
-                    // Navigator.push(
-                    //     context,
-                    //     PageTransition(
-                    //         type: PageTransitionType.rightToLeft,
-                    //         child: AllComplaintScreen()));
+                    // await PayStackInterface(
+                    //         amount: 10000,
+                    //         cardNumber: "29993993993",
+                    //         cvv: "123",
+                    //         expiryYear: 12,
+                    //         expiryMonth: 22,
+                    //         userID: "bakjsanan",
+                    //         email: "asjs@djdj.com")
+                    //     .processPayment(context);
+                    Navigator.push(
+                        context,
+                        PageTransition(
+                            type: PageTransitionType.rightToLeft,
+                            child: AllComplaintScreen()));
                   },
                   child: Card(
                     shape: RoundedRectangleBorder(
@@ -259,6 +290,16 @@ class _HomeScreenState extends State<HomeScreen> {
                           loaderType: AwesomeLoader.AwesomeLoader3,
                         ),
                       );
+                    }
+                    if (snapshot.data.isEmpty) {
+                      return Center(
+                          child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 30),
+                        child: Text(
+                          "No complaint yet",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ));
                     }
 
                     return ListView.builder(

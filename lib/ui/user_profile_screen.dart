@@ -39,6 +39,7 @@ import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:project/database/database_service.dart';
 import 'package:project/database/storage_service.dart';
+import 'package:project/faculties.dart';
 import 'package:project/hostels.dart';
 import 'package:project/model/user_model.dart';
 import 'package:project/permisssion_utils.dart';
@@ -76,6 +77,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   // TextEditingController hostel = TextEditingController();
 
   TextEditingController _genderController;
+  TextEditingController _facultyController = TextEditingController();
   // TextEditingController _dateController;
   bool isLoading = false;
 
@@ -181,6 +183,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               _user = snapshot.data;
               _hostelController.text = _user.hostel;
               _genderController.text = _user.gender;
+              _facultyController.text = _user.faculty;
               return Form(
                 key: _formKey,
                 child: SingleChildScrollView(
@@ -266,7 +269,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             contentPadding: EdgeInsets.all(10),
                             hintText: "name",
                             icon: Icon(Icons.person),
-                              counterText: "",
+                            counterText: "",
                           ),
                         ),
                         SizedBox(height: 10),
@@ -292,22 +295,74 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           ),
                         ),
                         SizedBox(height: 10),
-                        TextFormField(
-                          // initialValue: widget.user.name ?? "",
-                          //keyboardType: Ke,
-                          initialValue: _user.faculty,
-
-                          validator: (input) {
-                            if (input.isEmpty) {
-                              return "invalid";
-                            }
-                            faculty = input;
-                            return null;
+                        GestureDetector(
+                          onTap: () {
+                            showCupertinoModalPopup(
+                                context: context,
+                                builder: (BuildContext context) =>
+                                    CupertinoActionSheet(
+                                      title: const Text('Choose your hostel'),
+                                      // message: const Text('Your options are '),
+                                      actions: FACULTIES
+                                          .map(
+                                              (e) => CupertinoActionSheetAction(
+                                                    child: Text(
+                                                      e,
+                                                      style: TextStyle(
+                                                          color: Colors.black),
+                                                    ),
+                                                    onPressed: () {
+                                                      _facultyController.text =
+                                                          e;
+                                                      Navigator.pop(context);
+                                                    },
+                                                  ))
+                                          .toList(),
+                                      // <Widget>[
+                                      //   CupertinoActionSheetAction(
+                                      //     child: const Text('One'),
+                                      //     onPressed: () {
+                                      //       Navigator.pop(context, 'One');
+                                      //     },
+                                      //   ),
+                                      //   CupertinoActionSheetAction(
+                                      //     child: const Text('Two'),
+                                      //     onPressed: () {
+                                      //       Navigator.pop(context, 'Two');
+                                      //     },
+                                      //   )
+                                      // ],
+                                      cancelButton: CupertinoActionSheetAction(
+                                        child: const Text(
+                                          'Cancel',
+                                          style: TextStyle(color: Colors.red),
+                                        ),
+                                        isDefaultAction: true,
+                                        onPressed: () {
+                                          Navigator.pop(context, 'Cancel');
+                                        },
+                                      ),
+                                    ));
                           },
-                          decoration: InputDecoration(
-                            icon: Icon(Icons.stairs),
-                            hintText: "Faculty",
-                          contentPadding: EdgeInsets.all(10),
+                          child: AbsorbPointer(
+                            child: TextFormField(
+                              // initialValue: widget.user.name ?? "",
+                              //keyboardType: Ke,
+                              // initialValue: _user.faculty,
+                              controller: _facultyController,
+                              validator: (input) {
+                                if (input.isEmpty) {
+                                  return "invalid";
+                                }
+                                faculty = input;
+                                return null;
+                              },
+                              decoration: InputDecoration(
+                                icon: Icon(Icons.stairs),
+                                hintText: "Faculty",
+                                contentPadding: EdgeInsets.all(10),
+                              ),
+                            ),
                           ),
                         ),
                         SizedBox(height: 10),
@@ -315,18 +370,20 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           initialValue: _user.department,
                           // initialValue: widget.user.name ?? "",
                           //keyboardType: Ke,
-                          maxLines: null,
+                          maxLength: 30,
                           validator: (input) {
                             if (input.isEmpty) {
                               return "invalid";
                             }
                             dept = input;
+
                             return null;
                           },
                           decoration: InputDecoration(
                             icon: Icon(Icons.class_),
+                            counterText: "",
                             hintText: "Department",
-                             contentPadding: EdgeInsets.all(10),
+                            contentPadding: EdgeInsets.all(10),
                           ),
                         ),
                         SizedBox(height: 10),
@@ -334,7 +391,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           enabled: false,
                           initialValue: _user.email,
                           //keyboardType: Ke,
-                          maxLines: null,
+                          // maxLines: null,
 
                           decoration: InputDecoration(
                             contentPadding: EdgeInsets.all(10),
@@ -459,7 +516,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               decoration: InputDecoration(
                                 labelText: "hostel",
                                 icon: Icon(Icons.house_outlined),
-                                 contentPadding: EdgeInsets.all(10),
+                                contentPadding: EdgeInsets.all(10),
                               ),
                             ),
                           ),
@@ -652,13 +709,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         });
         if (e is PlatformException) {
           if (e.toString().contains("ERROR_NETWORK_REQUEST_FAILED")) {
-            show_flushbar("Error occured check your internet connection")
+            showFlushBarWidget("Error occured check your internet connection")
                 .show(context);
             // SnackBarUtils.showSnackBar(
             //     _scaffoldKey, "Error occured, check your internet connection");
             return;
           }
-          show_flushbar("Error occured please try again").show(context);
+          showFlushBarWidget("Error occured please try again").show(context);
         }
         logger.d(e);
         // SnackBarUtils.showSnackBar(

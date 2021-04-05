@@ -36,26 +36,26 @@ class AuthService extends ChangeNotifier {
       // await userCredential.user.sendEmailVerification();
       _isLoading = false;
       notifyListeners();
-      show_flushbar(
+      showFlushBarWidget(
               "Account created successfully,please verify your email address")
           .show(context);
       return true;
     } on FirebaseAuthException catch (e) {
       _isLoading = false;
       notifyListeners();
-      show_flushbar(e.message).show(context);
+      showFlushBarWidget(e.message).show(context);
       // if (e.code == 'weak-password') {
-      //   show_flushbar("The password provided is too weak").show(context);
+      //   showFlushBarWidget("The password provided is too weak").show(context);
       //   // print('The password provided is too weak.');
       // } else if (e.code == 'email-already-in-use') {
       //   // print('The account already exists for that email.');
-      //   show_flushbar("Email already in use").show(context);
+      //   showFlushBarWidget("Email already in use").show(context);
       // }
       return false;
     } catch (e) {
       _isLoading = false;
       notifyListeners();
-      show_flushbar("Error occured please try again").show(context);
+      showFlushBarWidget("Error occured please try again").show(context);
       return false;
     }
   }
@@ -75,7 +75,7 @@ class AuthService extends ChangeNotifier {
 
       if (!user.emailVerified) {
         await sendVerificationEmail(user);
-        show_flushbar(
+        showFlushBarWidget(
                 "You have not verified your email yet please verify to continue")
             .show(context);
 
@@ -87,18 +87,18 @@ class AuthService extends ChangeNotifier {
       _isLoading = false;
       notifyListeners();
       logger.d(e);
-      show_flushbar(e.message).show(context);
+      showFlushBarWidget(e.message).show(context);
       // if (e.code == 'user-not-found') {
-      //   show_flushbar("user-not-found").show(context);
+      //   showFlushBarWidget("user-not-found").show(context);
       // } else if (e.code == 'wrong-password') {
-      //   show_flushbar("Wrong password provided for that user.").show(context);
+      //   showFlushBarWidget("Wrong password provided for that user.").show(context);
       // }
       return false;
     } catch (e) {
       logger.d(e);
       _isLoading = false;
       notifyListeners();
-      show_flushbar("Error occured please try again").show(context);
+      showFlushBarWidget("Error occured please try again").show(context);
       return false;
     }
   }
@@ -116,12 +116,13 @@ class AuthService extends ChangeNotifier {
     notifyListeners();
     try {
       await auth.sendPasswordResetEmail(email: email);
-      show_flushbar("Reset message has been sent to your email").show(context);
+      showFlushBarWidget("Reset message has been sent to your email")
+          .show(context);
     } on FirebaseAuthException catch (e) {
-      show_flushbar(e.message).show(context);
+      showFlushBarWidget(e.message).show(context);
     } catch (e) {
       logger.d(e);
-      show_flushbar("Error occured please try again").show(context);
+      showFlushBarWidget("Error occured please try again").show(context);
     } finally {
       _isLoading = false;
       notifyListeners();

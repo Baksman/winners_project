@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:project/database/database_service.dart';
 import 'package:project/database/local_storage.dart';
 import 'package:project/model/user_model.dart';
+import 'package:project/ui/about_screen.dart';
 import 'package:project/ui/photo_view_screen.dart';
 import 'package:project/ui/user_profile_screen.dart';
 import 'package:project/ui/utils/color_utils.dart';
@@ -52,8 +53,8 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         GestureDetector(
-                            onTap: ()async {
-                          await    Navigator.push(context,
+                            onTap: () async {
+                              await Navigator.push(context,
                                   MaterialPageRoute(builder: (ctx) {
                                 return PhotoViewScreen(
                                   imageUrl: snapshot.data.imageUrl,
@@ -100,9 +101,14 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                   context,
                   MaterialPageRoute(
                       builder: (ctx) => EditProfileScreen(AppUser())));
+              setState(() {});
             }),
-            _buildItem(context, "Settings", Icons.settings, () {}),
-            _buildItem(context, "About", Icons.menu, () {}),
+            // _buildItem(context, "Settings", Icons.settings, () {}),
+            _buildItem(context, "About", Icons.menu, () async {
+              await Navigator.push(
+                  context, MaterialPageRoute(builder: (ctx) => AboutScreen()));
+              setState(() {});
+            }),
             Spacer(),
             _buildItem(context, "Logout", Icons.logout, () {
               verifyDiaog(context, "Are sure you want to logout");

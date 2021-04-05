@@ -641,7 +641,10 @@ class ChatScreenState extends State<ChatScreen> {
     return Positioned(
       top: 0,
       bottom: 0,
-      child: isLoading ? const CircularProgressIndicator() : Container(),
+      child: isLoading
+          ? Container(height: 30,
+          width: 200, child: const LinearProgressIndicator())
+          : Container(),
     );
   }
 
@@ -758,7 +761,8 @@ class ChatScreenState extends State<ChatScreen> {
       numRecommended: 10,
       onEmojiSelected: (emoji, category) {
         textEditingController.text = textEditingController.text + emoji.emoji;
-        textEditingController.selection = TextSelection.fromPosition(TextPosition(offset: textEditingController.text.length));
+        textEditingController.selection = TextSelection.fromPosition(
+            TextPosition(offset: textEditingController.text.length));
       },
     );
   }

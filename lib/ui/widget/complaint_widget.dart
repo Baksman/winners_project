@@ -70,6 +70,8 @@ class _ComplaintItemState extends State<ComplaintItem> {
                         widget.complaint.timeStamp.toDate().toString().toDate,
                         style: TextStyle(fontWeight: FontWeight.w600, fontSize: 11),
                       ),
+                      Spacer(),
+                      Text(widget.complaint.complaintID.substring(0,12),style: TextStyle(fontSize: 11),)
                     ],
                   ),
                 )

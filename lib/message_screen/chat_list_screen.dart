@@ -85,7 +85,10 @@ class ChatHomeState extends State<ChatHome> {
                     ),
                   );
                 } else {
-                  return ListView.builder(
+                  return ListView.separated(
+                    separatorBuilder: (ctx, index) {
+                      return Divider();
+                    },
                     padding: EdgeInsets.all(10.0),
                     itemBuilder: (context, index) =>
                         buildItem(context, snapshot.data.documents[index]),

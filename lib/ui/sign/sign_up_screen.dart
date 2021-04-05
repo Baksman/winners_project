@@ -6,6 +6,8 @@ import 'package:project/ui/utils/color_utils.dart';
 import 'package:project/view_model/auth_view_model.dart';
 import 'package:provider/provider.dart';
 
+import '../../email_validator.dart';
+
 class SignUpScreen extends StatefulWidget {
   @override
   _SignUpScreenState createState() => _SignUpScreenState();
@@ -123,8 +125,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                 color: Colors.grey[100]))),
                                     child: TextFormField(
                                       validator: (val) {
-                                        bool isValid =
-                                            EmailValidator.validate(val);
+                                        bool isValid = emailRegex.hasMatch(val);
                                         if (isValid) {
                                           email = val.trim();
                                           return null;

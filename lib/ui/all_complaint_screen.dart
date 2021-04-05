@@ -38,8 +38,13 @@ class _AllComplaintScreenState extends State<AllComplaintScreen> {
             List<Complaint> complaints = snapshot.data;
             logger.d(complaints.length);
             if (complaints.isEmpty) {
-              return Text("No complaint yet");
+              return Center(
+                  child: Text(
+                "No complaint yet",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ));
             }
+
             return SingleChildScrollView(
               child: Column(
                 children: complaints

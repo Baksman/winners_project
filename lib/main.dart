@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_paystack/flutter_paystack.dart';
+import 'package:kt_drawer_menu/kt_drawer_menu.dart';
 import 'package:project/database/database_service.dart';
 import 'package:project/message_screen/chat_list_screen.dart';
 import 'package:project/model/user_model.dart';
@@ -13,6 +14,7 @@ import 'package:project/paystack/paystack.dart';
 import 'package:project/ui/home_screen.dart';
 import 'package:project/ui/login/login_screen.dart';
 import 'package:project/ui/utils/log_utils.dart';
+import 'package:project/ui/widget/drawer.dart';
 // import 'package:project/ui/widget/drawer.dart';
 import 'package:project/view_model/auth_view_model.dart';
 import 'package:provider/provider.dart';
@@ -80,7 +82,13 @@ class _MainWidgetState extends State<MainWidget> {
             // check if user has already logged in and verified there email
             return (user == null || !user.emailVerified)
                 ? LoginScreen()
-                : HomeScreen();
+                : KTDrawerMenu(
+                    width: 140.0,
+                    radius: 10.0,
+                    scale: 0.8,
+                    content: HomeScreen(),
+                    drawer: DrawerWidget(),
+                  );
             // : ChatHome(
             //     currentUserId: user.uid,
             //   );
