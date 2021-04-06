@@ -2,13 +2,13 @@ import 'package:awesome_loader/awesome_loader.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:project/database/database_service.dart';
-import 'package:project/database/local_storage.dart';
+// import 'package:project/database/local_storage.dart';
 import 'package:project/model/user_model.dart';
 import 'package:project/ui/about_screen.dart';
 import 'package:project/ui/photo_view_screen.dart';
 import 'package:project/ui/user_profile_screen.dart';
 import 'package:project/ui/utils/color_utils.dart';
-import 'package:project/ui/utils/log_utils.dart';
+// import 'package:project/ui/utils/log_utils.dart';
 import 'package:project/ui/widget/logout_dialog.dart';
 import 'package:provider/provider.dart';
 
@@ -35,16 +35,13 @@ class _DrawerWidgetState extends State<DrawerWidget> {
               child: FutureBuilder<AppUser>(
                   future: DatabaseService.getUserData(appUser.uuid),
                   builder: (context, snapshot) {
-                    // if (snapshot.hasError) {
+                    // if (snapshot.hasErrgit or) {
                     //   logger.d(snapshot.error);
                     // }
                     if (!snapshot.hasData) {
-                      return Transform.translate(
-                        offset: Offset(0, 0),
-                        child: AwesomeLoader(
-                          color: Colors.white,
-                          loaderType: AwesomeLoader.AwesomeLoader3,
-                        ),
+                      return AwesomeLoader(
+                        color: Colors.white,
+                        loaderType: AwesomeLoader.AwesomeLoader3,
                       );
                     }
 

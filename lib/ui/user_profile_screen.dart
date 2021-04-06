@@ -26,7 +26,7 @@
 // import 'profile_photo_view.dart';
 
 import 'dart:io';
-
+import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:awesome_loader/awesome_loader.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -70,7 +70,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   String dept;
   String hostel;
   String name;
-
+  String mobileNumber;
   bool isLocationTapped = false;
   final nameRegex = new RegExp(r"[a-zA-Z \s]");
   final _formKey = GlobalKey<FormState>();
@@ -544,7 +544,22 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         //   },
                         // ),
                         SizedBox(height: 20),
+                        IntlPhoneField(
+                          initialValue: _user.mobileNumber ?? "",
 
+                          // controller: phoneNumberController,
+                          decoration: InputDecoration(
+                            labelText: 'Phone Number',
+                          ),
+                          initialCountryCode: 'NG',
+
+                          onSubmitted: (_) {
+                            // countryISO = phone.countryISOCode;
+                          },
+                          onSaved: (phone) {
+                            mobileNumber = phone.number;
+                          },
+                        ),
                         // InternationalPhoneNumberInput(
                         //     ignoreBlank: true,
                         //     initialCountry2LetterCode: widget.user.countryIso ?? "NG",
@@ -553,7 +568,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         //     countries: countryIso,
                         //     onInputChanged: _onInputChanged),
                         SizedBox(
-                          height: 10,
+                          height: 20,
                         ),
                         Container(
                           width: 120,

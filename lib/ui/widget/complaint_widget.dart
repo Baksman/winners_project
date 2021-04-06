@@ -30,7 +30,7 @@ class _ComplaintItemState extends State<ComplaintItem> {
               title: Text(
             widget.complaint.title.toUpperCase(),
             style:
-                TextStyle(fontSize: 13,fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor),
+                TextStyle(fontSize: 11,fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor),
           )),
           children: [
             Container(

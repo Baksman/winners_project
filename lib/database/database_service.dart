@@ -8,6 +8,8 @@ import 'package:project/ui/utils/flush_bar_utils.dart';
 import 'package:project/ui/utils/log_utils.dart';
 // import 'package:project/ui/utils/log_utils.dart';
 
+enum ComplaintType { Security, Fire, Water, Electricity }
+
 class DatabaseService extends ChangeNotifier {
   static FirebaseFirestore firestore = FirebaseFirestore.instance;
   bool _isLoading = false;

@@ -33,9 +33,11 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
           future: DatabaseService.getUserData(uuid),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
-              return AwesomeLoader(
-                color: Colors.white,
-                loaderType: AwesomeLoader.AwesomeLoader3,
+              return Center(
+                child: AwesomeLoader(
+                  color: primaryColor,
+                  loaderType: AwesomeLoader.AwesomeLoader3,
+                ),
               );
             }
             AppUser user = snapshot.data;

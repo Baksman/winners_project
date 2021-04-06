@@ -89,9 +89,9 @@ class _MainWidgetState extends State<MainWidget> {
                     content: HomeScreen(),
                     drawer: DrawerWidget(),
                   );
-            // : ChatHome(
-            //     currentUserId: user.uid,
-            //   );
+                // : ChatHome(
+                //     currentUserId: user.uid,
+                //   );
           },
         ),
       ),

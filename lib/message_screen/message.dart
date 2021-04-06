@@ -277,12 +277,13 @@ class ChatScreenState extends State<ChatScreen> {
                               ),
                             ),
                             errorWidget: (context, url, error) => Material(
-                              child: Image.asset(
-                                'images/img_not_available.jpeg',
-                                width: 200.0,
-                                height: 200.0,
-                                fit: BoxFit.cover,
-                              ),
+                              // child: Image.asset(
+                              //   'images/img_not_available.jpeg',
+                              //   width: 200.0,
+                              //   height: 200.0,
+                              //   fit: BoxFit.cover,
+                              // ),
+                              child: Icon(Icons.image_not_supported),
                               borderRadius: BorderRadius.all(
                                 Radius.circular(8.0),
                               ),
@@ -333,22 +334,26 @@ class ChatScreenState extends State<ChatScreen> {
               children: <Widget>[
                 isLastMessageLeft(index)
                     ? Material(
-                        child: CachedNetworkImage(
-                          placeholder: (context, url) => Container(
-                            child: CircularProgressIndicator(
-                              strokeWidth: 1.0,
-                              valueColor:
-                                  AlwaysStoppedAnimation<Color>(primaryColor),
-                            ),
-                            width: 35.0,
-                            height: 35.0,
-                            padding: EdgeInsets.all(10.0),
-                          ),
-                          imageUrl: peerAvatar,
-                          width: 35.0,
-                          height: 35.0,
-                          fit: BoxFit.cover,
-                        ),
+                        child: peerAvatar?.isEmpty ?? true
+                            ? Icon(
+                                Icons.account_circle,
+                              )
+                            : CachedNetworkImage(
+                                placeholder: (context, url) => Container(
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 1.0,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                        primaryColor),
+                                  ),
+                                  width: 35.0,
+                                  height: 35.0,
+                                  padding: EdgeInsets.all(10.0),
+                                ),
+                                imageUrl: peerAvatar,
+                                width: 35.0,
+                                height: 35.0,
+                                fit: BoxFit.cover,
+                              ),
                         borderRadius: BorderRadius.all(
                           Radius.circular(18.0),
                         ),
@@ -394,12 +399,7 @@ class ChatScreenState extends State<ChatScreen> {
                                   ),
                                   errorWidget: (context, url, error) =>
                                       Material(
-                                    child: Image.asset(
-                                      'images/img_not_available.jpeg',
-                                      width: 200.0,
-                                      height: 200.0,
-                                      fit: BoxFit.cover,
-                                    ),
+                                    child: Icon(Icons.image_not_supported),
                                     borderRadius: BorderRadius.all(
                                       Radius.circular(8.0),
                                     ),
@@ -641,10 +641,7 @@ class ChatScreenState extends State<ChatScreen> {
     return Positioned(
       top: 0,
       bottom: 0,
-      child: isLoading
-          ? Container(height: 30,
-          width: 200, child: const LinearProgressIndicator())
-          : Container(),
+      child: isLoading ? const CircularProgressIndicator() : Container(),
     );
   }
 

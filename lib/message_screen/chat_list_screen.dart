@@ -3,9 +3,12 @@
 // import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:project/message_screen/message.dart';
+import 'package:project/model/user_model.dart';
 import 'package:project/ui/utils/color_utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:project/ui/utils/log_utils.dart';
+import 'package:provider/provider.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
 // import 'package:firebase_messaging/firebase_messaging.dart';
 // import 'package:flutter/material.dart';
@@ -31,7 +34,7 @@ class ChatHome extends StatefulWidget {
 class ChatHomeState extends State<ChatHome> {
   ChatHomeState({Key key, @required this.currentUserId});
 
-  final String currentUserId;
+  String currentUserId;
   // final FirebaseMessaging firebaseMessaging = FirebaseMessaging();
   // final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
   // final GoogleSignIn googleSignIn = GoogleSignIn();
@@ -44,6 +47,11 @@ class ChatHomeState extends State<ChatHome> {
   //   const Choice(title: 'Settings', icon: Icons.settings),
   //   const Choice(title: 'Log out', icon: Icons.exit_to_app),
   // ];
+  @override
+  void initState() {
+    currentUserId = Provider.of<AppUser>(context, listen: false).uuid;
+    super.initState();
+  }
 
   void scrollListener() {
     if (listScrollController.offset >=
@@ -109,10 +117,19 @@ class ChatHomeState extends State<ChatHome> {
     );
   }
 
+  List<QueryDocumentSnapshot> listMessage = new List.from([]);
   Widget buildItem(BuildContext context, DocumentSnapshot document) {
-    if (document.data()['id'] == currentUserId) {
+    if (document.id == currentUserId) {
       return Container();
     } else {
+      String peerId = document.id;
+      logger.d("peer id $peerId");
+      String groupChatId;
+      if (currentUserId.hashCode <= peerId.hashCode) {
+        groupChatId = '$currentUserId-$peerId';
+      } else {
+        groupChatId = '$peerId-$currentUserId';
+      }
       return Container(
         child: FlatButton(
           child: Row(
@@ -156,10 +173,51 @@ class ChatHomeState extends State<ChatHome> {
                         margin: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 5.0),
                       ),
                       Container(
-                        child: Text(
-                          '${document.data()['aboutMe'] ?? 'Lorem ipsum'}',
-                          style: TextStyle(color: Colors.black),
-                        ),
+                        height: 20,
+                        child: StreamBuilder<QuerySnapshot>(
+                            stream: FirebaseFirestore.instance
+                                .collection('messages')
+                                .doc(groupChatId)
+                                .collection(groupChatId)
+                                .orderBy('timestamp', descending: true)
+                                .limit(1)
+                                .snapshots(),
+                            builder: (context, snapshot) {
+                              if (!snapshot.hasData) {
+                                return LinearProgressIndicator();
+                              }
+                              QuerySnapshot qs = snapshot.data;
+                              listMessage.addAll(snapshot.data.docs);
+                              logger.d(groupChatId);
+                              logger.d(listMessage.length);
+                              // QuerySnapshot qs = snapshot.data;
+                              // int le = qs.docs.length;
+                              // logger.d(le);
+                              logger.d(listMessage.length);
+                              if (qs.docs.isEmpty) {
+                                return Offstage();
+                              }
+                              return qs.docs[0].data()["type"] == 0
+                                  ? Text(
+                                      '${qs.docs[0].data()["content"] ?? 'Lorem ipsum'}',
+                                      style: TextStyle(color: Colors.black),
+                                    )
+                                  : Row(
+                                      children: [
+                                        Icon(
+                                          Icons.image,
+                                          color: Colors.grey,
+                                        ),
+                                        SizedBox(
+                                          width: 5,
+                                        ),
+                                        Text(
+                                          "image",
+                                          style: TextStyle(color: Colors.grey),
+                                        )
+                                      ],
+                                    );
+                            }),
                         alignment: Alignment.centerLeft,
                         margin: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                       )

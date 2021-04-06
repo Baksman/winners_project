@@ -13,53 +13,7 @@ class AboutScreen extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: Column(
-          children: [
-            SizedBox(
-              height: 100,
-            ),
-            Center(
-              child: Container(
-                height: 20,
-                child: Marquee(
-                  text: "I  💜  U  BABY GIRL--> ",
-                  style: TextStyle(
-                      color: primaryColor,
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 100,
-            ),
-            Center(
-              child: Container(
-                height: 20,
-                child: Marquee(
-                  text: "STOP CRYING BABY 💜 💜 💜 💜 💜 💜 💜",
-                  style: TextStyle(
-                      color: primaryColor,
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 100,
-            ),
-            Center(
-              child: Container(
-                height: 20,
-                child: Marquee(
-                  text: "IM SORRY BABY 😢😢😢😢",
-                  style: TextStyle(
-                      color: primaryColor,
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
-          ],
+          children: [],
         ),
       ),
     );
