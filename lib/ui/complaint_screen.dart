@@ -148,7 +148,7 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
                             if (validatedInput.length < 5) {
                               return "invalid too short";
                             }
-                            title = validatedInput;
+                            title = val;
                             return null;
                           },
                           decoration: InputDecoration(

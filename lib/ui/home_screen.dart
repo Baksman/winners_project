@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:animated_text_kit/animated_text_kit.dart';
+// import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:awesome_loader/awesome_loader.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -227,7 +227,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (ctx) => PaystackAddBankAccountScreen()));
+                            builder: (ctx) => AllComplaintScreen()));
                     //  await   PayStackpayment.createSubAccount(
                     //    accountNumber: "3090111458",
                     //    bankCode: '098',

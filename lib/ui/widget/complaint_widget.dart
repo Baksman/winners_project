@@ -71,7 +71,7 @@ class _ComplaintItemState extends State<ComplaintItem> {
                         style: TextStyle(fontWeight: FontWeight.w600, fontSize: 11),
                       ),
                       Spacer(),
-                      Text(widget.complaint.complaintID.substring(0,12),style: TextStyle(fontSize: 11),)
+                      SelectableText(widget.complaint.complaintID.substring(0,12),style: TextStyle(fontSize: 11),)
                     ],
                   ),
                 )
