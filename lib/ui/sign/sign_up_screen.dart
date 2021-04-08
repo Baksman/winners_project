@@ -134,7 +134,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       },
                                       decoration: InputDecoration(
                                           border: InputBorder.none,
-                                          hintText: "Email or Phone number",
+                                          hintText: "Email",
                                           hintStyle: TextStyle(
                                               color: Colors.grey[400])),
                                     ),
@@ -142,6 +142,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   Container(
                                     padding: EdgeInsets.all(8.0),
                                     child: TextFormField(
+                                       obscureText: !showPassword,
                                       validator: (val) {
                                         String serialisedPass =
                                             val.trim().replaceAll(" ", "");
@@ -173,7 +174,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   Container(
                                     padding: EdgeInsets.all(8.0),
                                     child: TextFormField(
+                                      obscureText: !showPassword,
                                       validator: (val) {
+                                      
                                         String serialisedPass =
                                             val.trim().replaceAll(" ", "");
                                         if (password != serialisedPass) {

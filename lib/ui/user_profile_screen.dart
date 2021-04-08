@@ -700,6 +700,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             faculty: faculty,
             matricNumber: matricNo,
             imageUrl: profileImageUrl,
+            mobileNumber: mobileNumber,
             // dateRegistered: _user.dateRegistered,
             hostel: hostel,
             gender: gender);

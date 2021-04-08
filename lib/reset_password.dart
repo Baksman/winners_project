@@ -1,5 +1,6 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:project/email_validator.dart';
 import 'package:project/ui/animation/login_animation.dart';
 import 'package:project/ui/utils/color_utils.dart';
 import 'package:project/view_model/auth_view_model.dart';
@@ -43,7 +44,8 @@ class _ResetPasswordState extends State<ResetPassword> {
                       child: TextFormField(
                         keyboardType: TextInputType.emailAddress,
                         validator: (val) {
-                          if (!EmailValidator.validate(val)) {
+                           bool isValid = emailRegex.hasMatch(val);
+                          if (!isValid) {
                             return "invalid email";
                           }
                           password = val;

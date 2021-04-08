@@ -43,7 +43,7 @@ class AppUser {
         faculty: map["faculty"] ?? "",
         roomNumber: map['roomNumber'] ?? "",
         matricNumber: map['matricNumber'] ?? "",
-        mobileNumber: map['mobileNumber'] ?? "",
+        mobileNumber: map['mobileNo'] ?? "",
         dateRegistered: map["dateReg"] ?? "",
         userType: map["userType"] ?? "");
   }

@@ -13,7 +13,9 @@ import 'package:project/database/local_storage.dart';
 import 'package:project/model/complaint_model.dart';
 import 'package:project/model/user_model.dart';
 import 'package:project/paystack/api_key.dart';
+import 'package:project/paystack/paystack_add_account.dart';
 import 'package:project/paystack/paystack_interface.dart';
+import 'package:project/paystack/paystack_split_pay.dart';
 import 'package:project/ui/all_complaint_screen.dart';
 import 'package:project/ui/complaint_screen.dart';
 import 'package:project/ui/utils/color_utils.dart';
@@ -121,8 +123,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             fontWeight: FontWeight.bold, color: Colors.grey),
                         children: <TextSpan>[
                           TextSpan(
-                              text: snapshot.data.name.toUpperCase()
-                                  ,
+                              text: snapshot.data.name.toUpperCase(),
                               style: TextStyle(fontWeight: FontWeight.bold)),
                         ],
                       ),
@@ -223,21 +224,31 @@ class _HomeScreenState extends State<HomeScreen> {
                 GestureDetector(
                   // AllComplaintScreen
                   onTap: () async {
-                    // print("pressed");
-                    // await PayStackInterface(
-                    //         amount: 10000,
-                    //         cardNumber: "29993993993",
-                    //         cvv: "123",
-                    //         expiryYear: 12,
-                    //         expiryMonth: 22,
-                    //         userID: "bakjsanan",
-                    //         email: "asjs@djdj.com")
-                    //     .processPayment(context);
                     Navigator.push(
                         context,
-                        PageTransition(
-                            type: PageTransitionType.rightToLeft,
-                            child: AllComplaintScreen()));
+                        MaterialPageRoute(
+                            builder: (ctx) => PaystackAddBankAccountScreen()));
+                    //  await   PayStackpayment.createSubAccount(
+                    //    accountNumber: "3090111458",
+                    //    bankCode: '098',
+                    //    businessName: "baksmanthing",
+                    //    percentCharge: 0.2
+                    //  );
+                    // SplitPaymentResponse sp =
+                    //     await PayStackpayment.getAccessCode(
+                    //   amount: "50000",
+                    //   emailAddress: "bk2@gn.com",
+                    // );
+
+                    // await PayStackInterface(
+                    //         amount: 5000,
+                    //         cardNumber: "4084084084084081",
+                    //         cvv: "408",
+                    //         expiryYear: 22,
+                    //         expiryMonth: 04,
+                    //         userID: sp.accessCode,
+                    //         email: "bk@gmail.com")
+                    //     .processPayment(context);
                   },
                   child: Card(
                     shape: RoundedRectangleBorder(

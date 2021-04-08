@@ -38,13 +38,12 @@ class PayStackInterface extends ChangeNotifier {
   // }
   Future<bool> processPayment(BuildContext context) async {
     Charge charge = Charge()
-      ..amount = amount // In base currency
+      ..amount = amount * 100// In base currency
       ..email = email
-      
       ..accessCode = userID
       ..card = _getCardFromUI();
     _isLoading = true;
-    notifyListeners();
+    // notifyListeners();
     try {
       CheckoutResponse response = await PaystackPlugin.checkout(
         context,
@@ -55,13 +54,19 @@ class PayStackInterface extends ChangeNotifier {
         fullscreen: false,
       );
       _isLoading = false;
-      notifyListeners();
+      // notifyListeners();
+      logger.d(response.message);
+      logger.d(response.status);
       responseMessage = response.message;
+      // Navigator.pop(context);
+
       return response.status;
     } catch (e) {
+      // Navigator.pop(context);
       _isLoading = false;
       logger.d(e);
-      notifyListeners();
+
+      // notifyListeners();
       return false;
     }
   }
