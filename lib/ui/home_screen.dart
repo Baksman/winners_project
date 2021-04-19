@@ -2,21 +2,18 @@ import 'dart:async';
 
 // import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:awesome_loader/awesome_loader.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_paystack/flutter_paystack.dart';
+// import 'package:flutter_paystack/flutter_paystack.dart';
 import 'package:kt_drawer_menu/kt_drawer_menu.dart';
 import 'package:marquee/marquee.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:project/database/database_service.dart';
 import 'package:project/database/local_storage.dart';
+import 'package:project/message_screen/chat_list_screen.dart';
 import 'package:project/model/complaint_model.dart';
 import 'package:project/model/user_model.dart';
-import 'package:project/paystack/api_key.dart';
-import 'package:project/paystack/paystack_add_account.dart';
-import 'package:project/paystack/paystack_interface.dart';
-import 'package:project/paystack/paystack_split_pay.dart';
-import 'package:project/ui/all_complaint_screen.dart';
+import 'package:project/paystack/paystack.dart';
 import 'package:project/ui/complaint_screen.dart';
 import 'package:project/ui/utils/color_utils.dart';
 import 'package:project/ui/utils/log_utils.dart';
@@ -46,17 +43,6 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-// WavyAnimatedTextKit(
-//   textStyle: TextStyle(
-//         fontSize: 32.0,
-//         fontWeight: FontWeight.bold
-//     ),
-//   text: [
-//     "Hello World",
-//     "Look at the waves",
-//   ],
-//   isRepeatingAnimation: true,
-// ),
 class _HomeScreenState extends State<HomeScreen> {
   // final a = KTDrawerMenu(
   //   width: 360.0,
@@ -227,7 +213,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (ctx) => AllComplaintScreen()));
+                            builder: (ctx) => ChatHome(
+                                currentUserId:
+                                    Provider.of<AppUser>(context, listen: false)
+                                        .uuid)));
                     //  await   PayStackpayment.createSubAccount(
                     //    accountNumber: "3090111458",
                     //    bankCode: '098',

@@ -1,6 +1,3 @@
-// import 'dart:async';
-// import 'dart:convert';
-// import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:project/message_screen/message.dart';
 import 'package:project/model/user_model.dart';
@@ -9,18 +6,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:project/ui/utils/log_utils.dart';
 import 'package:provider/provider.dart';
-// import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:firebase_messaging/firebase_messaging.dart';
-// import 'package:flutter/material.dart';
-// import 'package:flutter_chat_demo/chat.dart';
-// import 'package:flutter_chat_demo/const.dart';
-// import 'package:flutter_chat_demo/settings.dart';
-// import 'package:flutter_chat_demo/widget/loading.dart';
-// import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-// import 'package:fluttertoast/fluttertoast.dart';
-// import 'package:google_sign_in/google_sign_in.dart';
-
-// import 'main.dart';
 
 class ChatHome extends StatefulWidget {
   final String currentUserId;
@@ -66,14 +51,68 @@ class ChatHomeState extends State<ChatHome> {
   @override
   Widget build(BuildContext context) {
     final primaryColor = Theme.of(context).primaryColor;
+    final double statusbarHeight = MediaQuery.of(context).padding.top;
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.white,
-        title: Text(
-          "Messages",
-          style: TextStyle(color: Colors.black),
+      // appBar: AppBar(
+      //   elevation: 0,
+      //   automaticallyImplyLeading: false,
+      //   backgroundColor: Colors.white,
+      //   centerTitle: true,
+      //   flexibleSpace: Icon(Icons.mail),
+      //   title: Text(
+      //     "Messages",
+      //     style: TextStyle(color: Colors.black),
+      //   ),
+      // ),
+      appBar: PreferredSize(
+        preferredSize: Size(double.infinity, statusbarHeight + 50),
+        child: Column(
+          children: [
+            Container(
+              padding: EdgeInsets.only(top: statusbarHeight),
+              height: statusbarHeight + 30,
+              child: Text(
+                "Messages",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 25),
+              child: Container(
+                margin: EdgeInsets.only(right: 10, left: 10),
+                padding: EdgeInsets.all(2),
+                decoration: BoxDecoration(
+                  color: Color.fromRGBO(234, 237, 247, 0.45),
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: TextFormField(
+                  // controller: _emailController,
+                  onSaved: (value) {
+                    // _useremail = value;
+                  },
+                  decoration: InputDecoration(
+                      hintText: 'Search',
+                      hintStyle: TextStyle(
+                        fontSize: 14,
+                        color: Color(0xff2C3D57).withOpacity(0.46),
+                      ),
+                      suffixIcon: IconButton(
+                        onPressed: () {},
+                        // onPressed: _controller.clear,
+                        icon: Icon(Icons.search),
+                      ),
+                      border: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      enabledBorder: InputBorder.none,
+                      errorBorder: InputBorder.none,
+                      disabledBorder: InputBorder.none,
+                      contentPadding: EdgeInsets.all(10)),
+                ),
+              ),
+            )
+          ],
         ),
       ),
       body: Stack(
