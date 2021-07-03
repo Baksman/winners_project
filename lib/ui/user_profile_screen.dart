@@ -151,12 +151,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   Widget build(BuildContext context) {
     bool isDark = Theme.of(context).brightness == Brightness.dark;
-    // prd = ProgressDialog(context, isDismissible: true);
-
-    // prd.style(message: "Submitting...");
-    //  final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
-    //print(isFreelance);
+
     return Theme(
       data: new ThemeData(
         primaryColor: primaryColor,

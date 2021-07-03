@@ -14,6 +14,7 @@ import 'package:project/message_screen/chat_list_screen.dart';
 import 'package:project/model/complaint_model.dart';
 import 'package:project/model/user_model.dart';
 import 'package:project/paystack/paystack.dart';
+import 'package:project/ui/all_complaint_screen.dart';
 import 'package:project/ui/complaint_screen.dart';
 import 'package:project/ui/utils/color_utils.dart';
 import 'package:project/ui/utils/log_utils.dart';
@@ -95,13 +96,7 @@ class _HomeScreenState extends State<HomeScreen> {
               FutureBuilder<AppUser>(
                   future: DatabaseService.getUserData(uuid),
                   builder: (context, snapshot) {
-                    if (!snapshot.hasData)
-                      return Center(
-                        child: AwesomeLoader(
-                          color: primaryColor,
-                          loaderType: AwesomeLoader.AwesomeLoader3,
-                        ),
-                      );
+                    if (!snapshot.hasData) return Offstage();
                     return RichText(
                       text: TextSpan(
                         text: 'Welcome ',
@@ -116,36 +111,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       textAlign: TextAlign.center,
                     );
                   }),
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.center,
-              //   children: [
-              //     Text(
-              //       "Welcome",
-              //       style: TextStyle(
-              //           fontWeight: FontWeight.bold, color: Colors.grey),
-              //     ),
-              //     SizedBox(
-              //       width: 5,
-              //     ),
-              //     FutureBuilder<Object>(
-              //         future: LocalStorage.getUserName(),
-              //         builder: (context, snapshot) {
-              //           if (!snapshot.hasData)
-              //             return AwesomeLoader(
-              //               color: Colors.white,
-              //               loaderType: AwesomeLoader.AwesomeLoader3,
-              //             );
-              //           return Center(
-              //             child: Text(
-              //               snapshot.data,
-              //               style: TextStyle(
-              //                 fontWeight: FontWeight.bold,
-              //               ),
-              //             ),
-              //           );
-              //         }),
-              //   ],
-              // ),
+
               SizedBox(
                 height: 30,
               ),
@@ -164,7 +130,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ),
-              SizedBox(height: height / 7),
+              SizedBox(height: 30),
               FadeAnimation(
                 1.2,
                 GestureDetector(
@@ -213,31 +179,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (ctx) => ChatHome(
-                                currentUserId:
-                                    Provider.of<AppUser>(context, listen: false)
-                                        .uuid)));
-                    //  await   PayStackpayment.createSubAccount(
-                    //    accountNumber: "3090111458",
-                    //    bankCode: '098',
-                    //    businessName: "baksmanthing",
-                    //    percentCharge: 0.2
-                    //  );
-                    // SplitPaymentResponse sp =
-                    //     await PayStackpayment.getAccessCode(
-                    //   amount: "50000",
-                    //   emailAddress: "bk2@gn.com",
-                    // );
-
-                    // await PayStackInterface(
-                    //         amount: 5000,
-                    //         cardNumber: "4084084084084081",
-                    //         cvv: "408",
-                    //         expiryYear: 22,
-                    //         expiryMonth: 04,
-                    //         userID: sp.accessCode,
-                    //         email: "bk@gmail.com")
-                    //     .processPayment(context);
+                            builder: (ctx) => AllComplaintScreen()));
                   },
                   child: Card(
                     shape: RoundedRectangleBorder(

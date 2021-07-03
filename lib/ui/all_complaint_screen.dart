@@ -26,7 +26,7 @@ class _AllComplaintScreenState extends State<AllComplaintScreen> {
           builder: (context, snapshot) {
             if (snapshot.hasError) {
               logger.d(snapshot.error);
-              return Text("Error");
+              return Center(child: Text("Error occured"));
             }
             if (!snapshot.hasData)
               return Center(

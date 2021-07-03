@@ -107,8 +107,7 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
                               // maxLength: 30,Î
                               controller: _hostelController,
                               validator: (val) {
-                                String validatedInput =
-                                    val.replaceAll(" ", "").trim();
+                                String validatedInput = val.trim();
                                 if (validatedInput.isEmpty) {
                                   return "required";
                                 }
@@ -143,8 +142,7 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
                         child: TextFormField(
                           maxLength: 30,
                           validator: (val) {
-                            String validatedInput =
-                                val.replaceAll(" ", "").trim();
+                            String validatedInput = val.trim();
                             if (validatedInput.length < 5) {
                               return "invalid too short";
                             }
@@ -184,8 +182,7 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
                             border: InputBorder.none,
                           ),
                           validator: (val) {
-                            String validatedInput =
-                                val.replaceAll(" ", "").trim();
+                            String validatedInput = val.trim();
                             if (validatedInput.length < 10) {
                               return "invalid too short";
                             }
@@ -193,29 +190,6 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
                             return null;
                           },
                         ),
-                        //  TextFormField(
-                        //   // maxLength: null,
-
-                        //   validator: (val) {
-                        //     String validatedInput = val.replaceAll(" ", "").trim();
-                        //     if (validatedInput.length < 10) {
-                        //       return "invalid too short";
-                        //     }
-                        //     return null;
-                        //   },
-                        //   maxLines: null,
-                        //   maxLength: 300,
-                        //   decoration: InputDecoration(
-                        //       labelText: "description",
-                        //       contentPadding:
-                        //           EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                        //       border: OutlineInputBorder(
-                        //           borderRadius:
-                        //               BorderRadius.all(Radius.circular(10.0)),
-                        //           borderSide: BorderSide(
-                        //             color: Colors.transparent,
-                        //           ))),
-                        // ),
                       ),
                     ),
                     SizedBox(
@@ -236,8 +210,10 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
                                       Complaint complaint = Complaint(
                                           title: title,
                                           hostel: hostel,
+                                          isAttended: false,
                                           userId: uuid,
                                           complaintID: complaintID,
+
                                           // timeStamp: null,
                                           desc: description);
                                       bool res = await dbProvider.addCompliant(

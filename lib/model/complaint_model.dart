@@ -8,12 +8,14 @@ class Complaint {
   final String userId;
   final String complaintID;
   final String desc;
+  final isAttended;
   final Timestamp timeStamp;
 
   Complaint(
       {@required this.title,
       @required this.hostel,
       @required this.userId,
+      @required this.isAttended,
       @required this.complaintID,
       @required this.desc,
       this.timeStamp});
@@ -31,6 +33,7 @@ class Complaint {
       userId: userId ?? this.userId,
       complaintID: complaintID ?? this.complaintID,
       desc: desc ?? this.desc,
+      isAttended: isAttended ?? this.isAttended,
     );
   }
 
@@ -41,6 +44,7 @@ class Complaint {
       'userId': userId,
       'complaintID': complaintID,
       'desc': desc,
+      "isAttended": isAttended,
       "timeStamp": Timestamp.now()
     };
   }
@@ -52,6 +56,7 @@ class Complaint {
         userId: map['userId'],
         complaintID: map['complaintID'],
         desc: map['desc'],
+        isAttended: map["isAttended"],
         timeStamp: map["timeStamp"]);
   }
 
@@ -62,7 +67,7 @@ class Complaint {
 
   @override
   String toString() {
-    return 'Complaint(title: $title, hostel: $hostel, userId: $userId, complaintID: $complaintID, desc: $desc)';
+    return 'Complaint(title: $title, isAttended $isAttended, hostel: $hostel, userId: $userId, complaintID: $complaintID, desc: $desc)';
   }
 
   @override
