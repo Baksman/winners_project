@@ -41,7 +41,8 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
               );
             }
             AppUser user = snapshot.data;
-            _hostelController.text = user.hostel;
+            if (_hostelController.text == "")
+              _hostelController.text = user.hostel;
             return SingleChildScrollView(
               child: Form(
                 key: _formKey,
@@ -245,3 +246,20 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
     );
   }
 }
+
+
+// class ComplaintWidget extends StatefulWidget {
+//   const ComplaintWidget({ Key? key }) : super(key: key);
+
+//   @override
+//   _ComplaintWidgetState createState() => _ComplaintWidgetState();
+// }
+
+// class _ComplaintWidgetState extends State<ComplaintWidget> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+      
+//     );
+//   }
+// }

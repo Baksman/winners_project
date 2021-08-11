@@ -224,7 +224,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   builder: (context, snapshot) {
                     if (snapshot.hasError) {
                       logger.d(snapshot.error);
-                      return Text("error");
+                      return Text("Error occured");
                     } else if (!snapshot.hasData) {
                       return Center(
                         child: AwesomeLoader(
