@@ -42,7 +42,7 @@ android {
         applicationId 'com.example.project'
         minSdkVersion 16
         multiDexEnabled true
-        targetSdkVersion 29
+        targetSdkVersion 30
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }

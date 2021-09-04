@@ -2,13 +2,10 @@ import 'dart:io';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:awesome_loader/awesome_loader.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-// import 'package:flutter_cupertino_date_picker/flutter_cupertino_date_picker.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:project/database/database_service.dart';
 import 'package:project/database/storage_service.dart';
@@ -80,17 +77,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       ),
     );
   }
-
-// List<String> docPath;
-//    void _getDocuments() async {
-//     docPath = await DocumentsPicker.pickDocuments;
-
-//     if (!mounted) return;
-//     setState(() {});
-//   }
-
-//35151
-
 }
 
 class ProfleScreenWidget extends StatefulWidget {
@@ -118,7 +104,6 @@ class _ProfleScreenWidgetState extends State<ProfleScreenWidget> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController _genderController;
   TextEditingController _facultyController = TextEditingController();
-  // TextEditingController _dateController;
   bool isLoading = false;
 
   //bool isFreelance;
@@ -147,8 +132,6 @@ class _ProfleScreenWidgetState extends State<ProfleScreenWidget> {
   @override
   void initState() {
     _user = widget.user;
-    // initializeDateFormatting('en_US,', null);
-
     gender = widget.user.gender;
     _hostelController = TextEditingController();
     countryController = TextEditingController();
@@ -399,34 +382,7 @@ class _ProfleScreenWidgetState extends State<ProfleScreenWidget> {
               ),
 
               SizedBox(height: 10),
-              // GestureDetector(
-              //     onTap: () {
-              //       DatePicker.showDatePicker(
-              //         context,
-              //         pickerTheme: DateTimePickerTheme.Default,
-              //         onConfirm: (date, _) {
-              //           var fmtdate = DateFormat.yMMMMd("en_us").format(date);
-              //           _dateController.text = "$fmtdate";
-              //           _birthday = Timestamp.fromDate(date);
-              //         },
-              //         minDateTime: DateTime(
-              //           1920,
-              //           1,
-              //           1,
-              //           0,
-              //         ),
-              //         maxDateTime: DateTime(2020, 1, 1, 0),
-              //       );
-              //     },
-              //     child: AbsorbPointer(
-              //         child: TextFormField(
-              //       controller: _dateController,
-              //       decoration: InputDecoration(
-              //         contentPadding: EdgeInsets.symmetric(horizontal: 10),
-              //         hintText: "Birthday",
-              //         icon: Icon(Icons.date_range),
-              //       ),
-              //     ))),
+         
               SizedBox(
                 height: 10,
               ),
@@ -483,27 +439,7 @@ class _ProfleScreenWidgetState extends State<ProfleScreenWidget> {
                 ),
               ),
               // TextFormField(
-              //   initialValue: _user.hostel,
-              //   keyboardType: TextInputType.name,
-              //   maxLines: null,
-              //   maxLength: 100,
-              //   validator: (input) {
-              //     if (input.isEmpty) {
-              //       return "invalid";
-              //     }
-              //     hostel = input;
-              //     return null;
-              //   },
-              //   decoration: InputDecoration(
-              //     hintText: "hostel",
-              //     counterText: "",
-              //     contentPadding: EdgeInsets.all(10),
-              //     icon: Icon(Icons.house_outlined),
-              //   ),
-              //   onSaved: (String newLocation) {
-              //     // location = newLocation;
-              //   },
-              // ),
+
               SizedBox(height: 20),
               IntlPhoneField(
                 initialValue: _user.mobileNumber ?? "",
@@ -521,13 +457,6 @@ class _ProfleScreenWidgetState extends State<ProfleScreenWidget> {
                   mobileNumber = phone.number;
                 },
               ),
-              // InternationalPhoneNumberInput(
-              //     ignoreBlank: true,
-              //     initialCountry2LetterCode: widget.user.countryIso ?? "NG",
-              //     textFieldController: _phoneNumberController,
-              //     autoValidate: true,
-              //     countries: countryIso,
-              //     onInputChanged: _onInputChanged),
               SizedBox(
                 height: 20,
               ),
@@ -579,15 +508,6 @@ class _ProfleScreenWidgetState extends State<ProfleScreenWidget> {
               widget.user.imageUrl ?? "", profileImage);
         }
 
-        //determine if theres is
-
-        // String number =
-        //     phoneNumber.length <= 4 ? widget.user.phoneNumber : phoneNumber;
-        // if (name.trim().isNotEmpty && pdfUrl.isNotEmpty) {
-        //   _canApply = true;
-        // } else {
-        //   _canApply = false;
-        // }
 
         AppUser user = _user.copyWith(
             uuid: uuid,
@@ -600,13 +520,6 @@ class _ProfleScreenWidgetState extends State<ProfleScreenWidget> {
             // dateRegistered: _user.dateRegistered,
             hostel: hostel,
             gender: gender);
-
-        //decide if there is any update to userprofile;
-        // if (widget.user == user && pdf == null && profileImage == null) {
-        //   user.lastUpdated = widget.user.lastUpdated;
-        // } else {
-        //   user.lastUpdated = Timestamp.now();
-        // }ibr
 
         await DatabaseService.addUser(user);
 
@@ -623,16 +536,12 @@ class _ProfleScreenWidgetState extends State<ProfleScreenWidget> {
           if (e.toString().contains("ERROR_NETWORK_REQUEST_FAILED")) {
             showFlushBarWidget("Error occured check your internet connection")
                 .show(context);
-            // SnackBarUtils.showSnackBar(
-            //     _scaffoldKey, "Error occured, check your internet connection");
+          
             return;
           }
           showFlushBarWidget("Error occured please try again").show(context);
         }
-        logger.d(e);
-        // SnackBarUtils.showSnackBar(
-        //     _scaffoldKey, "Unknow error occured,try submitting again");
-        //show general error dialog
+        // logger.d(e);
       }
     }
   }

@@ -1,11 +1,8 @@
-import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:project/ui/animation/login_animation.dart';
 import 'package:project/ui/utils/color_utils.dart';
-// import 'package:awesome_loader/awesome_loader.dart';
 import 'package:project/view_model/auth_view_model.dart';
 import 'package:provider/provider.dart';
-
 import '../../email_validator.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -124,6 +121,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                             bottom: BorderSide(
                                                 color: Colors.grey[100]))),
                                     child: TextFormField(
+                                      keyboardType: TextInputType.emailAddress,
                                       validator: (val) {
                                         bool isValid = emailRegex.hasMatch(val);
                                         if (isValid) {
@@ -142,7 +140,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   Container(
                                     padding: EdgeInsets.all(8.0),
                                     child: TextFormField(
-                                       obscureText: !showPassword,
+                                      obscureText: !showPassword,
                                       validator: (val) {
                                         String serialisedPass =
                                             val.trim().replaceAll(" ", "");
@@ -176,7 +174,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     child: TextFormField(
                                       obscureText: !showPassword,
                                       validator: (val) {
-                                      
                                         String serialisedPass =
                                             val.trim().replaceAll(" ", "");
                                         if (password != serialisedPass) {

@@ -73,6 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final uuid = Provider.of<AppUser>(context).uuid;
+    final _dbService = Provider.of<DatabaseService>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text("Dashbaord"),
@@ -111,7 +112,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       textAlign: TextAlign.center,
                     );
                   }),
-
               SizedBox(
                 height: 30,
               ),
@@ -218,12 +218,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: TextStyle(fontWeight: FontWeight.bold),
                     )),
               ),
-
               FutureBuilder<List<Complaint>>(
                   future: DatabaseService.getUsersComplaints(uuid),
                   builder: (context, snapshot) {
                     if (snapshot.hasError) {
-                      logger.d(snapshot.error);
                       return Text("Error occured");
                     } else if (!snapshot.hasData) {
                       return Center(
@@ -247,29 +245,19 @@ class _HomeScreenState extends State<HomeScreen> {
                     return ListView.builder(
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
+                      
                       itemCount:
                           snapshot.data.length > 3 ? 3 : snapshot.data.length,
                       itemBuilder: (ctx, index) {
                         return Theme(
                             data: ThemeData(primaryColor: primaryColor),
-                            child:
-                                ComplaintItem(complaint: snapshot.data[index]));
+                            child: ComplaintItem(
+                              complaint: snapshot.data[index],
+                              databaseService: _dbService,
+                            ));
                       },
                     );
                   })
-              // SizedBox(
-              //   width: 350.0,
-              //   child: TextLiquidFill(
-              //     text: 'ABU HOSTEL CORRESPONDE',
-              //     waveColor: Colors.blueAccent,
-              //     boxBackgroundColor: primaryColor,
-              //     textStyle: TextStyle(
-              //       fontSize: 20.0,
-              //       fontWeight: FontWeight.bold,
-              //     ),
-              //     boxHeight: 300.0,
-              //   ),
-              // )
             ],
           ),
         ),

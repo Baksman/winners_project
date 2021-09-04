@@ -8,9 +8,7 @@ import 'package:project/database/database_service.dart';
 import 'package:project/message_screen/chat_list_screen.dart';
 import 'package:project/model/user_model.dart';
 import 'package:project/paystack/api_key.dart';
-import 'package:project/paystack/paystack.dart';
-// import 'package:project/paystack/paystack.dart';
-// import 'package:kt_drawer_menu/kt_drawer_menu.dart';
+
 import 'package:project/ui/home_screen.dart';
 import 'package:project/ui/login/login_screen.dart';
 import 'package:project/ui/utils/log_utils.dart';
@@ -33,9 +31,6 @@ class MainWidget extends StatefulWidget {
 class _MainWidgetState extends State<MainWidget> {
   @override
   void initState() {
-    PaystackPlugin.initialize(
-      publicKey: PAYSTACK_PUBLIC_KEY,
-    );
     // TODO: implement initState
     super.initState();
   }
@@ -61,19 +56,15 @@ class _MainWidgetState extends State<MainWidget> {
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (ctx, snapshot) {
             if (snapshot.hasError) {
-              print(snapshot.error);
-              logger.d(snapshot.error);
+              return Text("Please reinstall app");
             }
-            if (!snapshot.hasData) {
-              // return Material(
-              //   child: Center(
-              //     child: AwesomeLoader(
-              //       loaderType: AwesomeLoader.AwesomeLoader3,
-              //       color: Colors.blue,
-              //     ),
-              //   ),
-              // );
-            }
+            // if (snapshot.hasData) {
+            //   return Scaffold(
+            //     body: Center(
+            //       child: CircularProgressIndicator(),
+            //     ),
+            //   );
+            // }
             logger.d("data added");
             User user = snapshot.data;
             if (user != null) {
@@ -89,24 +80,9 @@ class _MainWidgetState extends State<MainWidget> {
                     content: HomeScreen(),
                     drawer: DrawerWidget(),
                   );
-                // : ChatHome(
-                //     currentUserId: user.uid,
-                //   );
           },
         ),
       ),
     );
   }
 }
-
-// class HomeBody extends StatelessWidget {
-//   final User user;
-
-//   const HomeBody({Key key, this.user}) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return user == null ? LoginScreen() : HomeScreen();
-//   }
-// }
-// // width: 360.0,

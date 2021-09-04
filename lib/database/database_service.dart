@@ -25,7 +25,6 @@ class DatabaseService extends ChangeNotifier {
     return AppUser.fromMap(docSnap.data());
   }
 
-
   Future<bool> addCompliant(Complaint complaint, BuildContext context) async {
     _isLoading = true;
     notifyListeners();
@@ -47,7 +46,8 @@ class DatabaseService extends ChangeNotifier {
   static Future<List<Complaint>> getUsersComplaints(String userId) async {
     QuerySnapshot qSnap = await firestore
         .collection("complaint")
-        .where("userId", isEqualTo: userId).orderBy("timeStamp",descending: true)
+        .where("userId", isEqualTo: userId)
+        .orderBy("timeStamp", descending: true)
         .get();
 
     List<Complaint> complaints = [];
@@ -67,5 +67,19 @@ class DatabaseService extends ChangeNotifier {
         .limit(3)
         .snapshots();
     return qSnap;
+  }
+
+  Future<bool> deleteComplaint(String complaintId) async {
+    final collection = FirebaseFirestore.instance.collection('complaint');
+    try {
+      notifyListeners();
+      await collection
+          .doc(complaintId) // <-- Doc ID to be deleted.
+          .delete();
+      notifyListeners();
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 }

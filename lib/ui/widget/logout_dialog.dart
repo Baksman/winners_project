@@ -22,11 +22,7 @@ verifyDiaog(BuildContext context, String title) {
                           onPressed: () {
                             Navigator.pop(context);
                           })),
-                  // SvgPicture.asset(
-                  //   "assets/svg/comfirm.svg",
-                  // ),
                   SizedBox(height: 30),
-
                   Text(title ?? "",
                       textAlign: TextAlign.center,
                       style:

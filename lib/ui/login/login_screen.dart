@@ -1,14 +1,14 @@
 // import 'package:awesome_loader/awesome_loader.dart';
-import 'package:email_validator/email_validator.dart';
+// import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
-import 'package:kt_drawer_menu/kt_drawer_menu.dart';
+// import 'package:kt_drawer_menu/kt_drawer_menu.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:project/database/database_service.dart';
+// import 'package:project/database/database_service.dart';
 import 'package:project/ui/animation/login_animation.dart';
 import 'package:project/ui/home_screen.dart';
 import 'package:project/ui/sign/sign_up_screen.dart';
 import 'package:project/ui/utils/color_utils.dart';
-import 'package:project/ui/widget/drawer.dart';
+// import 'package:project/ui/widget/drawer.dart';
 import 'package:project/view_model/auth_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -132,6 +132,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                             bottom: BorderSide(
                                                 color: Colors.grey[100]))),
                                     child: TextFormField(
+                                      keyboardType:TextInputType.emailAddress,
                                       validator: (val) {
                                         bool isValid = emailRegex.hasMatch(val);
                                         // EmailValidator.validate(val);

@@ -1,4 +1,6 @@
-  List<String> hostels = [
+
+
+const List<String> hostels = const [
     "Danfodio hall",
     "Ribadu hall",
     "Alexander hall",

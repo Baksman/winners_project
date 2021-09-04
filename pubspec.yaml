@@ -50,6 +50,7 @@ dependencies:
   dropdown_search: ^0.4.4
   shared_preferences: ^0.5.12+4
   marquee: ^1.6.1
+  flutter_slidable:
   cached_network_image: ^2.3.3
   intl_phone_field: ^1.4.2
   emoji_picker: ^0.1.0
