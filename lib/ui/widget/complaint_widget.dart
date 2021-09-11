@@ -51,7 +51,7 @@ class ComplaintItem extends StatelessWidget {
                           style: TextStyle(color: Colors.red, fontSize: 13),
                         )
                       : Text(
-                          "Attended",
+                          "Approved",
                           style: TextStyle(color: Colors.green, fontSize: 13),
                         ),
                 ),
