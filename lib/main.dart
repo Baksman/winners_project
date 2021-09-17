@@ -2,7 +2,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_paystack/flutter_paystack.dart';
+
 import 'package:kt_drawer_menu/kt_drawer_menu.dart';
 import 'package:project/database/database_service.dart';
 import 'package:project/message_screen/chat_list_screen.dart';
@@ -29,11 +29,7 @@ class MainWidget extends StatefulWidget {
 }
 
 class _MainWidgetState extends State<MainWidget> {
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
+
 
   @override
   Widget build(BuildContext context) {
