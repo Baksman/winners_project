@@ -8,16 +8,18 @@ class Complaint {
   final String userId;
   final String complaintID;
   final String desc;
-  final isAttended;
+  final bool isAttended;
   final Timestamp timeStamp;
+  final bool isInvalid;
 
   Complaint(
       {@required this.title,
       @required this.hostel,
       @required this.userId,
-      @required this.isAttended,
       @required this.complaintID,
       @required this.desc,
+      this.isInvalid = false,
+      this.isAttended = false,
       this.timeStamp});
 
   Complaint copyWith(
@@ -28,13 +30,13 @@ class Complaint {
       String desc,
       String timeStamp}) {
     return Complaint(
-      title: title ?? this.title,
-      hostel: hostel ?? this.hostel,
-      userId: userId ?? this.userId,
-      complaintID: complaintID ?? this.complaintID,
-      desc: desc ?? this.desc,
-      isAttended: isAttended ?? this.isAttended,
-    );
+        title: title ?? this.title,
+        hostel: hostel ?? this.hostel,
+        userId: userId ?? this.userId,
+        complaintID: complaintID ?? this.complaintID,
+        desc: desc ?? this.desc,
+        isInvalid: isInvalid ?? this.isInvalid,
+        isAttended: isAttended ?? this.isAttended);
   }
 
   Map<String, dynamic> toMap() {
@@ -43,6 +45,7 @@ class Complaint {
       'hostel': hostel,
       'userId': userId,
       'complaintID': complaintID,
+      'isInvalid': isInvalid,
       'desc': desc,
       "isAttended": isAttended,
       "timeStamp": Timestamp.now()
@@ -56,6 +59,7 @@ class Complaint {
         userId: map['userId'],
         complaintID: map['complaintID'],
         desc: map['desc'],
+        isInvalid: map['isInvalid'],
         isAttended: map["isAttended"],
         timeStamp: map["timeStamp"]);
   }
@@ -67,7 +71,7 @@ class Complaint {
 
   @override
   String toString() {
-    return 'Complaint(title: $title, isAttended $isAttended, hostel: $hostel, userId: $userId, complaintID: $complaintID, desc: $desc)';
+    return 'Complaint(title: $title,isAttended $isAttended hostel: $hostel, userId: $userId, complaintID: $complaintID, desc: $desc)';
   }
 
   @override

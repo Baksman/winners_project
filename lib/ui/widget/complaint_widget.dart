@@ -44,17 +44,11 @@ class ComplaintItem extends StatelessWidget {
             children: [
               Align(
                 child: Padding(
-                  padding: const EdgeInsets.only(right: 10),
-                  child: !complaint.isAttended
-                      ? Text(
-                          "Pending",
-                          style: TextStyle(color: Colors.red, fontSize: 13),
-                        )
-                      : Text(
-                          "Approved",
-                          style: TextStyle(color: Colors.green, fontSize: 13),
-                        ),
-                ),
+                    padding: const EdgeInsets.only(right: 10),
+                    child: titleDeterm(
+                        isAttended: complaint.isAttended,
+                        isInvalid: complaint.isInvalid,
+                        isPending: !complaint.isAttended)),
                 alignment: Alignment.centerRight,
               ),
               Container(
@@ -109,4 +103,30 @@ class ComplaintItem extends StatelessWidget {
       ),
     );
   }
+}
+
+Widget titleDeterm({bool isAttended, bool isInvalid, bool isPending}) {
+  if (isPending) {
+    return Text(
+      "Pending",
+      style: TextStyle(color: Colors.red, fontSize: 13),
+    );
+  } else if (isInvalid) {
+    return Row(
+      children: [
+        Icon(
+          Icons.cancel,
+          color: Colors.red,
+        ),
+        Text(
+          "Invalid",
+          style: TextStyle(color: Colors.green, fontSize: 13),
+        ),
+      ],
+    );
+  }
+  return Text(
+    "Approved",
+    style: TextStyle(color: Colors.green, fontSize: 13),
+  );
 }
