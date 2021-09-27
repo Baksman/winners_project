@@ -106,23 +106,29 @@ class ComplaintItem extends StatelessWidget {
 }
 
 Widget titleDeterm({bool isAttended, bool isInvalid, bool isPending}) {
-  if (isPending) {
+  if (isInvalid??false) {
+    return Row(
+      children: [
+        Spacer(),
+        Icon(
+          Icons.info_outline,
+          color: Colors.red,
+          size: 13,
+        ),
+        SizedBox(
+          width: 5,
+        ),
+        Text("Invalid",
+            style: TextStyle(
+              color: Colors.red,
+              fontSize: 13,
+            )),
+      ],
+    );
+  } else if (isPending) {
     return Text(
       "Pending",
       style: TextStyle(color: Colors.red, fontSize: 13),
-    );
-  } else if (isInvalid) {
-    return Row(
-      children: [
-        Icon(
-          Icons.cancel,
-          color: Colors.red,
-        ),
-        Text(
-          "Invalid",
-          style: TextStyle(color: Colors.green, fontSize: 13),
-        ),
-      ],
     );
   }
   return Text(
